@@ -124,4 +124,4 @@ If you created a package compatible with fundle, feel free to [add it to the Wik
 ## Motivations
 
 I know that [oh-my-fish](https://github.com/oh-my-fish/oh-my-fish) has a utility to
-install packages, but the simplest tool possible, not a whole framework.
+install packages, but I wanted the simplest tool possible, not a whole framework.
