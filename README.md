@@ -6,7 +6,7 @@ A minimalist package manager for [fish](http://fishshell.com/) inspired by [Vund
 All plugins are installed/updated using git, so the only requirement is to have
 git installed and on the path (and well, fish, obviously).
 
-This package manager is with [oh-my-fish plugins](https://github.com/oh-my-fish).
+This package manager is compatible with [oh-my-fish plugins](https://github.com/oh-my-fish).
 If you need the core functions of [oh-my-fish](https://github.com/oh-my-fish),
 you can use the `tuvistavie/oh-my-fish-core` plugin.
 
@@ -29,7 +29,7 @@ fundle plugin 'oh-my-fish/plugin-php'
 fundle init
 ```
 
-### More detailed instructions
+### In depth
 
 To add a plugin, you simply need to add
 
@@ -102,16 +102,26 @@ A plugin basically has the following structure.
   be added to `fish_complete_path`.
 
 NOTE: if no `init.fish` file is found, all the files with a `.fish` extensions in the
-top directory of the plugin will be loaded. This is to make the plugins available with
-oh-my-fish plugins that do not depend on oh-my-fish core.
+top directory of the plugin will be loaded. This is to make the plugins compatible with
+[oh-my-fish plugins](https://github.com/oh-my-fish).
+
+## Compatible plugins
+
+Most [oh-my-fish plugins](https://github.com/oh-my-fish) should work out of the box
+or with [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my-fish-core) installed.
+
+Please feel free to edit the [wiki](https://github.com/tuvistavie/fundle/wiki) and add
+your plugins, or plugins you know work with fundle.
 
 ## Contributing
 
 Contributions are very appreciated. Please open an issue or create a PR if you
 want to contribute.
+The highest priority for now is to add proper tests.
+
 If you created a package compatible with fundle, feel free to [add it to the Wiki](https://github.com/tuvistavie/fundle/wiki/Home/_edit).
 
 ## Motivations
 
 I know that [oh-my-fish](https://github.com/oh-my-fish/oh-my-fish) has a utility to
-install packages, but I wanted a simple tool, not a whole framework.
+install packages, but the simplest tool possible, not a whole framework.
