@@ -111,6 +111,7 @@ function __fundle_install -d "install plugin"
 	for i in (seq (count $__fundle_plugin_names))
 		__fundle_download_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
+	__fundle_init
 end
 
 function __fundle_plugin -d "add plugin to fundle"
