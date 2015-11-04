@@ -89,16 +89,23 @@ function __fundle_init -d "initialize fundle"
 		set -l functions_dir (__fundle_plugin_path $plugin "functions")
 		set -l completions_dir (__fundle_plugin_path $plugin "completions")
 
-		if test -f $init_file
-			source $init_file
-		end
-
 		if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
 			set fish_function_path $functions_dir $fish_function_path
 		end
 
 		if begin; test -d $completions_dir; and not contains $completions_dir $fish_complete_path; end
 			set fish_complete_path $dir $fish_complete_path
+		end
+
+		if test -f $init_file
+			source $init_file
+			# if init.fish found, do not read other files
+			continue
+		end
+
+		# read all *.fish files if no init.fish found
+		for f in (find (__fundle_plugin_path $plugin) -maxdepth 1 -iname "*.fish")
+			source $f
 		end
 	end
 end

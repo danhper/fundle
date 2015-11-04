@@ -2,8 +2,13 @@
 
 A minimalist package manager for [fish](http://fishshell.com/) inspired by [Vundle](https://github.com/VundleVim/Vundle.vim).
 
+
 All plugins are installed/updated using git, so the only requirement is to have
 git installed and on the path (and well, fish, obviously).
+
+This package manager is with [oh-my-fish plugins](https://github.com/oh-my-fish).
+If you need the core functions of [oh-my-fish](https://github.com/oh-my-fish),
+you can use the `tuvistavie/oh-my-fish-core` plugin.
 
 ## Installation
 
@@ -14,6 +19,17 @@ wget https://raw.githubusercontent.com/tuvistavie/fundle/master/fundle.fish -O ~
 ```
 
 ## Usage
+
+### Sample `config.fish`
+
+```
+fundle plugin 'tuvistavie/fish-fastdir'
+fundle plugin 'oh-my-fish/plugin-php'
+
+fundle init
+```
+
+### More detailed instructions
 
 To add a plugin, you simply need to add
 
@@ -26,16 +42,16 @@ somewhere in your configuration.
 For example:
 
 ```
-fundle plugin 'tuvistavie/fastdir'
+fundle plugin 'tuvistavie/fish-fastdir'
 ```
 
-will install the repository at https://github.com/tuvistavie/fastdir.
+will install the repository at https://github.com/tuvistavie/fish-fastdir.
 
 If you need to change the repository, you can pass it as a second argument and
 it will be passed directly to `git clone`:
 
 ```
-fundle plugin 'tuvistavie/fastdir' 'git@github.com:tuvistavie/fastdir.git'
+fundle plugin 'tuvistavie/fish-fastdir' 'git@github.com:tuvistavie/fish-fastdir.git'
 ```
 
 After having made all the calls to `fundle plugin`, you need to add
@@ -84,6 +100,10 @@ A plugin basically has the following structure.
   prefix your functions with `__plugin_name` if the user will not be using them explicitly.
 * `completions` is the directory containing the plugin completions. This directory will
   be added to `fish_complete_path`.
+
+NOTE: if no `init.fish` file is found, all the files with a `.fish` extensions in the
+top directory of the plugin will be loaded. This is to make the plugins available with
+oh-my-fish plugins that do not depend on oh-my-fish core.
 
 ## Contributing
 
