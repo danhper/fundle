@@ -38,21 +38,21 @@ it will be passed directly to `git clone`:
 fundle plugin 'tuvistavie/fastdir' 'git@github.com:tuvistavie/fastdir.git'
 ```
 
-After having made all the calls to `fundle plugin`, you need to call
+After having made all the calls to `fundle plugin`, you need to add
 
 ```
 fundle init
 ```
 
-for the plugins to be loaded.
+in your configuration file for the plugins to be loaded.
 
-When you add new plugins, you need to run
+When you add new plugins, you must restart your shell and run
 
 ```
 fundle install
 ```
 
-for fundle to download them, and to re-run `fundle init` or to restart your shell.
+for fundle to download them.
 
 You can also use
 
