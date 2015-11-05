@@ -8,7 +8,7 @@ git installed and on the path (and well, fish, obviously).
 
 This package manager is compatible with [oh-my-fish plugins](https://github.com/oh-my-fish).
 If you need the core functions of [oh-my-fish](https://github.com/oh-my-fish),
-you can use the `tuvistavie/oh-my-fish-core` plugin.
+you can use the [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my-fish-core) plugin.
 
 ## Installation
 
