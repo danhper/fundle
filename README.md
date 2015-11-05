@@ -1,4 +1,4 @@
-# fundle
+# fundle [![Build Status](https://travis-ci.org/tuvistavie/fundle.svg?branch=master)](https://travis-ci.org/tuvistavie/fundle)
 
 A minimalist package manager for [fish](http://fishshell.com/) inspired by [Vundle](https://github.com/VundleVim/Vundle.vim).
 
