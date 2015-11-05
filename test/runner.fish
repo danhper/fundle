@@ -17,7 +17,7 @@ function __run_tests
 		end
 	end
 	echo "$success_count successes, $failures_count failures"
-	return (test failures_count -eq 0)
+	return (test $failures_count -eq 0)
 end
 
 source ../fundle.fish
@@ -27,5 +27,8 @@ for test_file in (ls test_*.fish)
 end
 
 __run_tests
+set -l ret $status
 
 cd -
+
+exit $ret

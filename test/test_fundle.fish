@@ -3,7 +3,7 @@ set dir (dirname (status -f))
 function test___fundle_plugins_dir
 	set -e fundle_plugins_dir
 	if test (__fundle_plugins_dir) != "$HOME/.config/fish/fundle"
-		echo "__fundle_plugins_dir should eq $HOME/.config/fish/fundle when no arg passed"
+		echo '__fundle_plugins_dir should eq $HOME/.config/fish/fundle when no arg passed'
 		return 1
 	end
 
