@@ -23,11 +23,15 @@ wget https://raw.githubusercontent.com/tuvistavie/fundle/master/fundle.fish -O ~
 ### Sample `config.fish`
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir'
+fundle plugin 'edc/bass'
 fundle plugin 'oh-my-fish/plugin-php'
+fundle plugin 'tuvistavie/fish-fastdir'
+fundle plugin 'tuvistavie/fish-theme-afowler'
 
 fundle init
 ```
+
+This will source the four plugins listed and load all the functions and completions found.
 
 ### In depth
 
