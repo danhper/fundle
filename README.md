@@ -18,6 +18,14 @@ Just drop [fundle.fish](fundle.fish) in your `~/.config/fish/functions` director
 wget https://raw.githubusercontent.com/tuvistavie/fundle/master/fundle.fish -O ~/.config/fish/functions/fundle.fish
 ```
 
+### ArchLinux
+
+fundle is available on the AUR, so you can install it system wide with
+
+```
+yaourt -S fundle-git
+```
+
 ## Usage
 
 ### Sample `config.fish`
