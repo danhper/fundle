@@ -1,0 +1,12 @@
+language: c
+
+sudo: true
+
+env:
+  - FISH_PPA=nightly-master
+  - FISH_PPA=release-2
+
+before_install:
+  - ./scripts/bootstrap_ci.sh
+
+script: fish test/runner.fish
