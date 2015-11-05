@@ -121,7 +121,6 @@ your plugins, or plugins you know work with fundle.
 
 Contributions are very appreciated. Please open an issue or create a PR if you
 want to contribute.
-The highest priority for now is to add proper tests.
 
 If you created a package compatible with fundle, feel free to [add it to the Wiki](https://github.com/tuvistavie/fundle/wiki/Home/_edit).
 

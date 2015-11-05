@@ -1,0 +1,2 @@
+function my_plugin_function
+end

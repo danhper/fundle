@@ -19,13 +19,13 @@ function __fundle_get_url -d "returns the url for the given plugin"
 end
 
 function __fundle_update_plugin -d "update the given plugin"
-	cd $argv[1]
-	git remote set-url origin $argv[2]
-	git pull --rebase origin master
+	cd $argv[1]; and \
+	git remote set-url origin $argv[2]; and \
+	git pull --rebase origin master; and \
 	cd -
 end
 
-function __fundle_download_plugin -d "download the given plugin"
+function __fundle_install_plugin -d "install the given plugin"
 	if __fundle_no_git
 		return 1
 	end
@@ -54,13 +54,6 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 		echo $argv
 	end
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
-end
-
-function __fundle_check_dir -d "check if fundle dir exists and warn if not"
-	set -l fundle_dir (__fundle_plugins_dir)
-	if not test -d $fundle_dir
-		__fundle_show_doc_msg "$fundle_dir is not a directory. You probably need to run 'fundle install'."
-	end
 end
 
 function __fundle_plugin_path -d "get the path in the given plugin"
@@ -116,7 +109,7 @@ function __fundle_install -d "install plugin"
 	end
 
 	for i in (seq (count $__fundle_plugin_names))
-		__fundle_download_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
+		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
 	__fundle_init
 end
