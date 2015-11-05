@@ -7,6 +7,6 @@ env:
   - FISH_PPA=release-2
 
 before_install:
-  - ./scripts/bootstrap_ci.sh
+  - make prepare
 
-script: fish test/runner.fish
+script: make test
