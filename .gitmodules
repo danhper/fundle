@@ -1,3 +1,0 @@
-[submodule "test/fixtures/fish-fastdir"]
-	path = test/fixtures/fish-fastdir
-	url = https://github.com/tuvistavie/fish-fastdir.git

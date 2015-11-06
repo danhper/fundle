@@ -111,7 +111,15 @@ function __fundle_install -d "install plugin"
 	for i in (seq (count $__fundle_plugin_names))
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
+
+	set -l original_plugins_count (count (__fundle_plugins -s))
 	__fundle_init
+
+	# if plugins count increase after init, new plugins have dependencies
+	# install new plugins dependencies if any
+	if test (count (__fundle_plugins -s)) -gt $original_plugins_count
+		__fundle_install $argv
+	end
 end
 
 function __fundle_plugin -d "add plugin to fundle"
@@ -136,6 +144,18 @@ function __fundle_print_help -d "prints fundle help"
 	echo "usage: fundle (init | plugin | install | help)"
 end
 
+function __fundle_plugins -d "list registered plugins"
+	if begin; contains -- -s $argv; or contains -- --short $argv; end
+		for name in $__fundle_plugin_names
+			echo $name
+		end
+	else
+		for i in (seq (count $__fundle_plugin_names))
+			echo {$__fundle_plugin_names[$i]}\n\t{$__fundle_plugin_urls[$i]}
+		end
+	end
+end
+
 function fundle -d "run fundle"
 	if __fundle_no_git
 		return 1
@@ -157,6 +177,8 @@ function fundle -d "run fundle"
 			__fundle_init $sub_args
 		case "plugin"
 			__fundle_plugin $sub_args
+		case "plugins"
+			__fundle_plugins $sub_args
 		case "install"
 			__fundle_install $sub_args
 		case "help" -h --help

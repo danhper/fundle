@@ -1,4 +1,16 @@
-set dir (dirname (status -f))
+set dir (realpath (dirname (status -f)))
+
+function __fundle_gitify
+	cd $argv[1]
+	git init > /dev/null
+	git add . > /dev/null
+	git commit -m "Initial commit" > /dev/null
+	cd $dir
+end
+
+function __fundle_clean_gitify
+	rm -rf $argv[1]/.git
+end
 
 function test___fundle_plugins_dir
 	set -e fundle_plugins_dir
@@ -22,7 +34,7 @@ function test___fundle_no_git
 end
 
 function test___fundle_get_url
-	set -l plugin tuvistavie/fish-fastdir
+	set -l plugin foo/with_init
 	if test (__fundle_get_url $plugin) != "https://github.com/$plugin.git"
 		echo '__fundle_get_url should return the github repository url'
 		return 1
@@ -31,54 +43,58 @@ end
 
 function test___fundle_install_plugin
 	set -g fundle_plugins_dir $dir/fundle
-	set -l plugin tuvistavie/fish-fastdir
-	set -l repo $dir/fixtures/fish-fastdir
+	set -l plugin foo/with_init
+	set -l repo $dir/fixtures/foo/with_init
+	__fundle_gitify $dir/fixtures/foo/with_init
 
-	set -l res (__fundle_install_plugin $plugin /bad/path 2>&1 > /dev/null)
+	set -l res (__fundle_install_plugin $plugin /bad/path > /dev/null 2>&1)
 	if test $status -eq 0
 		echo '__fundle_install_plugin should fail when plugin does not exist'
 		return 1
 	end
 
-	set -l res (__fundle_install_plugin $plugin $repo 2>&1 > /dev/null)
+	set -l res (__fundle_install_plugin $plugin $repo > /dev/null 2>&1)
 	if test $status -ne 0
 		echo '__fundle_install_plugin should not fail when plugin exists'
 		return 1
 	end
 
+	__fundle_clean_gitify $dir/fixtures/foo/with_init
 	rm -rf $dir/fundle
 end
 
 function test___fundle_update_plugin
 	set -g fundle_plugins_dir $dir/fundle
-	set -l plugin tuvistavie/fish-fastdir
-	set -l repo $dir/fixtures/fish-fastdir
+	set -l plugin foo/with_init
+	set -l repo foo/with_init
+	__fundle_gitify $dir/fixtures/foo/with_init
 
 	# ignore output
-	set -l res (__fundle_update_plugin $plugin $repo 2>&1 > /dev/null)
+	set -l res (__fundle_update_plugin $plugin $repo > /dev/null 2>&1)
 	if test $status -eq 0
 		echo '__fundle_update_plugin should fail when plugin not present'
 		return 1
 	end
 
-	set -l res (__fundle_install_plugin $plugin $repo 2>&1 > /dev/null)
-	set -l res (__fundle_update_plugin $plugin $repo 2>&1 > /dev/null)
+	set -l res (__fundle_install_plugin $plugin $repo > /dev/null 2>&1)
+	set -l res (__fundle_update_plugin $plugin $repo > /dev/null 2>&1)
 	if test $status -eq 0
 		echo '__fundle_update_plugin should succeed when plugin is present'
 		return 1
 	end
 
+	__fundle_clean_gitify $dir/fixtures/foo/with_init
 	rm -rf $dir/fundle
 end
 
 function test___fundle_plugin_path
 	set -g fundle_plugins_dir $dir/fundle
-	if test (__fundle_plugin_path 'tuvistavie/fish-fastdir') != "$fundle_plugins_dir/tuvistavie/fish-fastdir"
+	if test (__fundle_plugin_path 'foo/with_init') != "$fundle_plugins_dir/foo/with_init"
 		echo '__fundle_plugin_path should return plugin path in $fundle_plugins_dir'
 		return 1
 	end
 
-	if test (__fundle_plugin_path 'tuvistavie/fish-fastdir' 'init.fish') != "$fundle_plugins_dir/tuvistavie/fish-fastdir/init.fish"
+	if test (__fundle_plugin_path 'foo/with_init' 'init.fish') != "$fundle_plugins_dir/foo/with_init/init.fish"
 		echo '__fundle_plugin_path should return plugin file path in $fundle_plugins_dir'
 		return 1
 	end
@@ -114,6 +130,32 @@ function test___fundle_plugin
 
 	if test $__fundle_plugin_urls[2] != '/path/to/baz'
 		echo '__fundle_plugin should use given url'
+		return 1
+	end
+end
+
+function test___fundle_plugins
+	set -e __fundle_plugin_names
+	set -e __fundle_plugin_urls
+	set -g fundle_plugins_dir $dir/fundle
+
+	__fundle_plugin 'foo/with_init'
+	__fundle_plugin 'foo/without_init'
+
+	if test (count (__fundle_plugins -s)) -ne 2
+		echo '__fundle_plugins should return all registered plugins'
+		return 1
+	end
+
+	set -e __fundle_plugin_names
+	set -e __fundle_plugin_urls
+
+	__fundle_plugin 'foo/with_init' '/foo/bar'
+
+	set -l actual (__fundle_plugins)
+	set -l expected (echo -e "foo/with_init\n\t/foo/bar")
+	if test "$actual" != "$expected"
+		echo '__fundle_plugins should return plugin name and url'
 		return 1
 	end
 end
@@ -177,42 +219,87 @@ function test___fundle_init
 	rm -rf $dir/fundle
 end
 
+function test___fundle_install
+	set -g fundle_plugins_dir $dir/fundle
+	set -e __fundle_plugin_names
+	set -e __fundle_plugin_urls
+
+	__fundle_gitify $dir/fixtures/foo/with_dependency
+	__fundle_gitify $dir/fixtures/foo/with_init
+
+	__fundle_plugin 'foo/with_init' $dir/fixtures/foo/with_init
+
+	set -l res (__fundle_install > /dev/null 2>&1)
+	if test $status -ne 0
+		echo '__fundle_install should succeed when all plugin exists'
+		return 1
+	end
+
+	rm -rf $dir/fundle
+
+	set -e __fundle_plugin_names
+	set -e __fundle_plugin_urls
+
+	__fundle_plugin 'foo/with_dependency' $dir/fixtures/foo/with_dependency
+	set -l res (__fundle_install > /dev/null 2>&1)
+	if test $status -ne 0
+		echo '__fundle_install should succeed when plugins have dependencies'
+		return 1
+	end
+	if not test -d $fundle_plugins_dir/foo/with_dependency
+		echo '__fundle_install should install registered plugins'
+		return 1
+	end
+	if not test -d $fundle_plugins_dir/foo/with_init
+		echo '__fundle_install should install registered plugins dependencies'
+		return 1
+	end
+
+	__fundle_clean_gitify $dir/fixtures/foo/with_dependency
+	__fundle_clean_gitify $dir/fixtures/foo/with_init
+
+	rm -rf $dir/fundle
+end
+
 function test_fundle
 	set -g fundle_plugins_dir $dir/fundle
 	set -e __fundle_plugin_names
 	set -e __fundle_plugin_urls
 
-	fundle plugin 'tuvistavie/fish-fastdir' $dir/fixtures/fish-fastdir
+	__fundle_gitify $dir/fixtures/foo/with_init
+
+	fundle plugin 'foo/with_init' $dir/fixtures/foo/with_init
 	if test $status -ne 0
 		echo 'fundle plugin should not fail with correct arguments'
 		return 1
 	end
-	if test $__fundle_plugin_names[1] != 'tuvistavie/fish-fastdir'
+	if test $__fundle_plugin_names[1] != 'foo/with_init'
 		echo 'fundle plugin should add the repository to $__fundle_plugin_names'
 		return 1
 	end
 
-	set -l res (fundle install 2>&1 > /dev/null)
+	set -l res (fundle install > /dev/null 2>&1)
 	if test $status -ne 0
 		echo 'fundle install should not fail with existing plugins'
 		return 1
 	end
-	if not test -d $fundle_plugins_dir/tuvistavie/fish-fastdir
+	if not test -d $fundle_plugins_dir/foo/with_init
 		echo 'fundle install should install registered plugins'
 		return 1
 	end
 
-	cp -r $dir/fixtures/foo $dir/fundle/foo
-	fundle plugin 'foo/with_init'
+	cp -r $dir/fixtures/foo/without_init $dir/fundle/foo/without_init
+	fundle plugin 'foo/without_init'
 	fundle init
 	if test $status -ne 0
 		echo 'fundle init should not fail when plugin registered'
 		return 1
 	end
-	if not functions -q my_plugin_function
-		echo 'fundle init should load plugin functions'
+	if test -z "$i_do_have_init_file"
+		echo 'fundle init should load plugins'
 		return 1
 	end
 
+	__fundle_clean_gitify $dir/fixtures/foo/with_init
 	rm -rf $dir/fundle
 end
