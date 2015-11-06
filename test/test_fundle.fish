@@ -1,4 +1,4 @@
-set dir (realpath (dirname (status -f)))
+set dir (cd (dirname (status -f)); and pwd)
 
 function __fundle_gitify
 	cd $argv[1]

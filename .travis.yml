@@ -9,4 +9,8 @@ env:
 before_install:
   - make prepare
 
+before_script:
+  - git config --global user.email "tuvistavie+fundle@gmail.com"
+  - git config --global user.name "Fundle"
+
 script: make test
