@@ -141,7 +141,7 @@ function __fundle_plugin -d "add plugin to fundle"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | install | help)"
+	echo "usage: fundle (init | plugin | plugins | install | help)"
 end
 
 function __fundle_plugins -d "list registered plugins"
@@ -184,5 +184,8 @@ function fundle -d "run fundle"
 		case "help" -h --help
 			__fundle_print_help
 			return 0
+		case "*"
+			__fundle_print_help
+			return 1
 	end
 end
