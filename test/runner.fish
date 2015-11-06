@@ -20,7 +20,7 @@ function __run_tests
 	return (test $failures_count -eq 0)
 end
 
-source ../fundle.fish
+source ../functions/fundle.fish
 
 for test_file in (ls test_*.fish)
 	source $test_file

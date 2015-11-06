@@ -12,10 +12,10 @@ you can use the [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my
 
 ## Installation
 
-Just drop [fundle.fish](fundle.fish) in your `~/.config/fish/functions` directory and you are done.
+Just drop [fundle.fish](functions/fundle.fish) in your `~/.config/fish/functions` directory and you are done.
 
 ```
-wget https://raw.githubusercontent.com/tuvistavie/fundle/master/fundle.fish -O ~/.config/fish/functions/fundle.fish
+wget https://raw.githubusercontent.com/tuvistavie/fundle/master/functions/fundle.fish -O ~/.config/fish/functions/fundle.fish
 ```
 
 ### ArchLinux
@@ -98,6 +98,8 @@ to upgrade the plugins.
 * `fundle plugin PLUGIN [PLUGIN_URL]`: Add a plugin to fundle
 * `fundle plugins [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
 * `fundle help`: Displays available commands
+
+Completions are available in the [completions/fundle.fish](./completions/fundle.fish).
 
 ## Plugin structure
 
