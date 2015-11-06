@@ -40,6 +40,7 @@ fundle init
 ```
 
 This will source the four plugins listed and load all the functions and completions found.
+All you need to do is to run `fundle install` once after reloading your shell and you are set.
 
 ### In depth
 
@@ -90,6 +91,14 @@ fundle install -u
 
 to upgrade the plugins.
 
+## Commands
+
+* `fundle init`: Initialize fundle, loading all the available plugins
+* `fundle install [-u]`: Install (or update) all plugins
+* `fundle plugin PLUGIN [PLUGIN_URL]`: Add a plugin to fundle
+* `fundle plugins [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle help`: Displays available commands
+
 ## Plugin structure
 
 A plugin basically has the following structure.
@@ -116,6 +125,21 @@ A plugin basically has the following structure.
 NOTE: if no `init.fish` file is found, all the files with a `.fish` extensions in the
 top directory of the plugin will be loaded. This is to make the plugins compatible with
 [oh-my-fish plugins](https://github.com/oh-my-fish).
+
+## Managing dependencies
+
+fundle can manage dependencies for you very easily.
+You just have to add
+
+```
+fundle plugin 'my/dependency'
+```
+
+in your plugin `init.fish` and fundle will automatically fetch and install the
+missing dependencies when installing the plugin.
+
+I created a minimal example in [fish-nvm](https://github.com/tuvistavie/fish-nvm),
+which depends on [edc/bass](https://github.com/edc/bass).
 
 ## Compatible plugins
 
