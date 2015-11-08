@@ -87,7 +87,7 @@ function __fundle_init -d "initialize fundle"
 		end
 
 		if begin; test -d $completions_dir; and not contains $completions_dir $fish_complete_path; end
-			set fish_complete_path $dir $fish_complete_path
+			set fish_complete_path $completions_dir $fish_complete_path
 		end
 
 		if test -f $init_file
