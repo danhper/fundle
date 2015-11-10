@@ -207,7 +207,17 @@ function test___fundle_init
 		return 1
 	end
 	if test -n "$i_should_be_empty"
-		echo '__fundle_init should not load othr .fish files when init.fish present'
+		echo '__fundle_init should not load other .fish files when init.fish present'
+		return 1
+	end
+
+	if not contains $dir'/fundle/foo/with_init/functions' $fish_function_path
+		echo '__fundle_init should add functions directory to $fish_function_path'
+		return 1
+	end
+
+	if not contains $dir'/fundle/foo/with_init/completions' $fish_complete_path
+		echo '__fundle_init should add completions directory to $fish_complete_path'
 		return 1
 	end
 
