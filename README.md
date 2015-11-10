@@ -100,6 +100,8 @@ to upgrade the plugins.
 * `fundle help`: Displays available commands
 
 Completions are available in the [completions/fundle.fish](./completions/fundle.fish).
+Note that you will need to install [fish-completion-helpers](https://github.com/tuvistavie/fish-completion-helpers)
+to use them.
 
 ## Plugin structure
 
