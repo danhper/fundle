@@ -1,3 +1,7 @@
+function __fundle_seq
+	seq 1 1 $argv[1] ^ /dev/null
+end
+
 function __fundle_plugins_dir -d "returns fundle directory"
 	if test -z "$fundle_plugins_dir"
 		echo $HOME/.config/fish/fundle
@@ -108,7 +112,7 @@ function __fundle_install -d "install plugin"
 		__fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle install'"
 	end
 
-	for i in (seq (count $__fundle_plugin_names))
+	for i in (__fundle_seq (count $__fundle_plugin_names))
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
 
@@ -150,7 +154,7 @@ function __fundle_plugins -d "list registered plugins"
 			echo $name
 		end
 	else
-		for i in (seq (count $__fundle_plugin_names))
+		for i in (__fundle_seq (count $__fundle_plugin_names))
 			echo {$__fundle_plugin_names[$i]}\n\t{$__fundle_plugin_urls[$i]}
 		end
 	end
