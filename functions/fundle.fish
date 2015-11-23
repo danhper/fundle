@@ -1,5 +1,5 @@
-function __fundle_seq
-	seq 1 1 $argv[1] ^ /dev/null
+function __fundle_seq -a upto
+	seq 1 1 $upto ^ /dev/null
 end
 
 function __fundle_plugins_dir -d "returns fundle directory"
@@ -18,24 +18,24 @@ function __fundle_no_git -d "check if git is installed"
 	return 1
 end
 
-function __fundle_get_url -d "returns the url for the given plugin"
-	echo "https://github.com/"$argv[1]".git"
+function __fundle_get_url -d "returns the url for the given plugin" -a repo
+	echo "https://github.com/$repo.git"
 end
 
-function __fundle_update_plugin -d "update the given plugin"
-	cd $argv[1]; and \
-	git remote set-url origin $argv[2]; and \
+function __fundle_update_plugin -d "update the given plugin" -a dir -a remote_url
+	cd $dir; and \
+	git remote set-url origin $remote_url; and \
 	git pull --rebase origin master; and \
 	cd -
 end
 
-function __fundle_install_plugin -d "install the given plugin"
+function __fundle_install_plugin -d "install the given plugin" -a dir -a remote_url
 	if __fundle_no_git
 		return 1
 	end
 
-	set -l plugin_dir (__fundle_plugins_dir)/$argv[1]
-	set -l git_url $argv[2]
+	set -l plugin_dir (__fundle_plugins_dir)/$dir
+	set -l git_url $remote_url
 	set -l upgrade ""
 
 	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
@@ -60,12 +60,12 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
 end
 
-function __fundle_plugin_path -d "get the path in the given plugin"
+function __fundle_plugin_path -d "get the path in the given plugin" -a plugin
 	set -l suffix ""
 	if test (count $argv) -eq 2
 		set suffix "/$argv[2]"
 	end
-	echo (__fundle_plugins_dir)/$argv[1]$suffix
+	echo (__fundle_plugins_dir)/$plugin$suffix
 end
 
 function __fundle_init -d "initialize fundle"
@@ -126,20 +126,20 @@ function __fundle_install -d "install plugin"
 	end
 end
 
-function __fundle_plugin -d "add plugin to fundle"
+function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
 	switch (count $argv)
 		case 0
 			echo "plugin needs at least one parameter."
 			return 1
 		case 1
-			set plugin_url (__fundle_get_url $argv[1])
+			set plugin_url (__fundle_get_url $name)
 		case 2
 			set plugin_url $argv[2]
 	end
 
-	if not contains $argv[1] $__fundle_plugin_names
-		set -g __fundle_plugin_names $__fundle_plugin_names $argv[1]
+	if not contains $name $__fundle_plugin_names
+		set -g __fundle_plugin_names $__fundle_plugin_names $name
 		set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url
 	end
 end

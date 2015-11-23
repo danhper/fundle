@@ -8,8 +8,8 @@ function __fundle_gitify
 	cd $dir
 end
 
-function __fundle_clean_gitify
-	rm -rf $argv[1]/.git
+function __fundle_clean_gitify -a git_dir
+	rm -rf $git_dir/.git
 end
 
 function test___fundle_plugins_dir
