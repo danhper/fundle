@@ -41,6 +41,74 @@ function test___fundle_get_url
 	end
 end
 
+function test___fundle_url_rev
+	set -l remote 'https://github.com/tuvistavie/fundle.git'
+
+	if test (__fundle_url_rev $remote) != 'master'
+		echo '__fundle_url_rev should default to master'
+		return 1
+	end
+
+	set -l branch "foobar"
+	if test (__fundle_url_rev "$remote#$branch") != $branch
+		echo '__fundle_url_rev should parse rev'
+		return 1
+	end
+end
+
+function test___fundle_url_rev
+	set -l remote 'https://github.com/tuvistavie/fundle.git'
+
+	if test (__fundle_remote_url $remote) != $remote
+		echo '__fundle_remote_url should work with no commit-ish'
+		return 1
+	end
+
+	set -l branch "foobar"
+	if test (__fundle_remote_url "$remote#$branch") != $remote
+		echo '__fundle_remote_url should work with a commit-ish'
+		return 1
+	end
+end
+
+function test___fundle_rev_parse
+	set -l repo $dir/fixtures/foo/with_init
+
+	__fundle_gitify $repo
+
+	set -l sha (__fundle_rev_parse "$repo/.git" master)
+	if test $status -ne 0
+		echo '__fundle_rev_parse should work with valid git repositories'
+		return 1
+	end
+	set -l sha_length (echo -n $sha | wc -m)
+	if test sha_length -ne 40
+		echo '__fundle_rev_parse should return a valid sha'
+		return 1
+	end
+
+	__fundle_clean_gitify $repo
+end
+
+function test___fundle_commit_sha
+	set -l repo $dir/fixtures/foo/with_init
+
+	__fundle_gitify $repo
+
+	set -l sha (__fundle_commit_sha $repo master)
+	if test $status -ne 0
+		echo '__fundle_commit_sha should work with valid git repositories'
+		return 1
+	end
+	set -l sha_length (echo -n $sha | wc -m)
+	if test sha_length -ne 40
+		echo '__fundle_commit_sha should return a valid sha'
+		return 1
+	end
+
+	__fundle_clean_gitify $repo
+end
+
 function test___fundle_install_plugin
 	set -g fundle_plugins_dir $dir/fundle
 	set -l plugin foo/with_init
@@ -53,7 +121,7 @@ function test___fundle_install_plugin
 		return 1
 	end
 
-	set -l res (__fundle_install_plugin $plugin $repo > /dev/null 2>&1)
+	set -l res (__fundle_install_plugin $plugin $repo ^&1)
 	if test $status -ne 0
 		echo '__fundle_install_plugin should not fail when plugin exists'
 		return 1
@@ -251,7 +319,7 @@ function test___fundle_install
 	set -e __fundle_plugin_urls
 
 	__fundle_plugin 'foo/with_dependency' $dir/fixtures/foo/with_dependency
-	set -l res (__fundle_install > /dev/null 2>&1)
+	set -l res (__fundle_install ^&1)
 	if test $status -ne 0
 		echo '__fundle_install should succeed when plugins have dependencies'
 		return 1

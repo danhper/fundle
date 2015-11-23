@@ -67,6 +67,14 @@ it will be passed directly to `git clone`:
 fundle plugin 'tuvistavie/fish-fastdir' 'git@github.com:tuvistavie/fish-fastdir.git'
 ```
 
+You can also use a branch, tag or any [commit-ish](https://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html#_specifying_revisions) by appending `#commit-ish` to the URL. For example:
+
+```
+fundle plugin 'tuvistavie/fish-fastdir' 'git@github.com:tuvistavie/fish-fastdir.git#my-branch'
+```
+
+will use `my-branch`. If no commit-ish is passed, it will default to `master`.
+
 After having made all the calls to `fundle plugin`, you need to add
 
 ```
@@ -164,3 +172,7 @@ If you created a package compatible with fundle, feel free to [add it to the Wik
 
 I know that [oh-my-fish](https://github.com/oh-my-fish/oh-my-fish) has a utility to
 install packages, but I wanted the simplest tool possible, not a whole framework.
+
+## Changelog
+
+* 2015-11-24: Allow the use of `#commit-ish` when using plugin repo. Checkout repository `commit-ish` instead of using master branch.

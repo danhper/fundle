@@ -2,6 +2,38 @@ function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
 end
 
+function __fundle_url_rev -d "prints the revision from the url" -a git_url
+	set -l rev (echo $git_url | cut -d '#' -f 2 -s)
+	if test -n "$rev"
+		echo $rev
+	else
+		echo master
+	end
+end
+
+function __fundle_remote_url -d "prints the remote url from the full git url" -a git_url
+	echo $git_url | cut -d '#' -f 1
+end
+
+function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
+	set -l sha (git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
+	if test $status -eq 0
+		echo $sha
+		return 0
+	end
+	return 1
+end
+
+function __fundle_commit_sha -d "returns sha of the commit-ish" -a dir -a commitish
+	if test -d "$dir/.git"
+		set dir "$dir/.git"
+	end
+	if __fundle_rev_parse $dir "origin/$commitish"
+		return 0
+	end
+	__fundle_rev_parse $dir $commitish
+end
+
 function __fundle_plugins_dir -d "returns fundle directory"
 	if test -z "$fundle_plugins_dir"
 		echo $HOME/.config/fish/fundle
@@ -22,20 +54,19 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 	echo "https://github.com/$repo.git"
 end
 
-function __fundle_update_plugin -d "update the given plugin" -a dir -a remote_url
-	cd $dir; and \
-	git remote set-url origin $remote_url; and \
-	git pull --rebase origin master; and \
-	cd -
+function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remote_url
+	git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
+	git --git-dir=$git_dir fetch -q ^ /dev/null
 end
 
-function __fundle_install_plugin -d "install the given plugin" -a dir -a remote_url
+function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_url
 	if __fundle_no_git
 		return 1
 	end
 
-	set -l plugin_dir (__fundle_plugins_dir)/$dir
-	set -l git_url $remote_url
+	set -l plugin_dir (__fundle_plugins_dir)/$plugin
+	set -l git_dir $plugin_dir/.git
+	set -l remote_url (__fundle_remote_url $git_url)
 	set -l upgrade ""
 
 	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
@@ -44,12 +75,23 @@ function __fundle_install_plugin -d "install the given plugin" -a dir -a remote_
 
 	if test -d $plugin_dir
 		if test -n "$upgrade"
-			__fundle_update_plugin $plugin_dir $git_url
+			echo "Upgrading $plugin"
+			__fundle_update_plugin $git_dir $remote_url
 		else
 			echo "$argv[1] installed in $plugin_dir"
+			return 0
 		end
 	else
-		git clone $git_url $plugin_dir
+		echo "Installing $plugin"
+		git clone -q $remote_url $plugin_dir
+	end
+
+	set -l sha (__fundle_commit_sha $git_dir (__fundle_url_rev $git_url))
+	if test $status -eq 0
+		git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
+	else
+		echo "Could not upgrade $plugin"
+		return 1
 	end
 end
 
