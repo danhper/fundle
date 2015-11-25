@@ -155,19 +155,6 @@ function test___fundle_update_plugin
 	rm -rf $dir/fundle
 end
 
-function test___fundle_plugin_path
-	set -g fundle_plugins_dir $dir/fundle
-	if test (__fundle_plugin_path 'foo/with_init') != "$fundle_plugins_dir/foo/with_init"
-		echo '__fundle_plugin_path should return plugin path in $fundle_plugins_dir'
-		return 1
-	end
-
-	if test (__fundle_plugin_path 'foo/with_init' 'init.fish') != "$fundle_plugins_dir/foo/with_init/init.fish"
-		echo '__fundle_plugin_path should return plugin file path in $fundle_plugins_dir'
-		return 1
-	end
-end
-
 function test___fundle_plugin
 	set -e __fundle_plugin_names
 	set -e __fundle_plugin_urls

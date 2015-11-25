@@ -102,14 +102,6 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
 end
 
-function __fundle_plugin_path -d "get the path in the given plugin" -a plugin
-	set -l suffix ""
-	if test (count $argv) -eq 2
-		set suffix "/$argv[2]"
-	end
-	echo (__fundle_plugins_dir)/$plugin$suffix
-end
-
 function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
 
@@ -119,14 +111,16 @@ function __fundle_init -d "initialize fundle"
 	end
 
 	for plugin in $__fundle_plugin_names
-		if not test -d (__fundle_plugin_path $plugin)
+		set -l plugin_dir "$fundle_dir/$plugin"
+
+		if not test -d $plugin_dir
 			__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
 			continue
 		end
 
-		set -l init_file (__fundle_plugin_path $plugin "init.fish")
-		set -l functions_dir (__fundle_plugin_path $plugin "functions")
-		set -l completions_dir (__fundle_plugin_path $plugin "completions")
+		set -l init_file "$plugin_dir/init.fish"
+		set -l functions_dir "$plugin_dir/functions"
+		set -l completions_dir  "$plugin_dir/completions"
 
 		if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
 			set fish_function_path $functions_dir $fish_function_path
@@ -143,7 +137,7 @@ function __fundle_init -d "initialize fundle"
 		end
 
 		# read all *.fish files if no init.fish found
-		for f in (find (__fundle_plugin_path $plugin) -maxdepth 1 -iname "*.fish")
+		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
 			source $f
 		end
 	end
