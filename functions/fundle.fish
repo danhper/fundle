@@ -106,7 +106,9 @@ function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
 
 	if test (count $__fundle_plugin_names) -eq 0
-		__fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle init'"
+		__fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle init'. \
+
+Try reloading your shell if you just edited your configuration."
 		return 1
 	end
 
