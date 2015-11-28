@@ -40,7 +40,12 @@ fundle init
 ```
 
 This will source the four plugins listed and load all the functions and completions found.
-All you need to do is to run `fundle install` once after reloading your shell and you are set.
+
+After editing `config.fish`,
+
+1. Reload your shell (you can run `exec fish` for example)
+2. Run `fundle install`
+3. That's it!
 
 ### In depth
 
@@ -83,7 +88,10 @@ fundle init
 
 in your configuration file for the plugins to be loaded.
 
-When you add new plugins, you must restart your shell and run
+IMPORTANT: When you add new plugins, you must restart your shell *before* running `fundle install`.
+The simplest way to do this is probably to run `exec fish` in the running shell.
+
+You can then run
 
 ```
 fundle install
