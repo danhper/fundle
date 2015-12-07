@@ -1,5 +1,34 @@
+set __fundle_current_version '0.2.0'
+
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
+end
+
+function __fundle_compare_versions -a version1 -a version2
+	for i in (__fundle_seq 3)
+		set -l v1 (echo $version1 | cut -d '.' -f $i)
+		set -l v2 (echo $version2 | cut -d '.' -f $i)
+		if test $v1 -lt $v2
+			echo -n "lt"; and return 0
+		else if test $v1 -gt $v2
+			echo -n "gt"; and return 0
+		end
+	end
+	echo -n "eq"; and return 0
+end
+
+function __fundle_self_update -d "updates fundle"
+	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
+	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
+	if test (__fundle_compare_versions $latest (__fundle_version)) != "gt"
+		echo "fundle is already up to date"; and return 0
+	else
+		set -l file_url_template 'https://raw.githubusercontent.com/tuvistavie/fundle/VERSION/functions/fundle.fish'
+		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
+		set -l tmp_file (mktemp)
+		set -l update_message "fundle has been updated to version $latest"
+		wget --quiet -O $tmp_file $file_url; and mv $tmp_file (status -f); and echo $update_message; and return 0
+	end
 end
 
 function __fundle_url_rev -d "prints the revision from the url" -a git_url
@@ -197,8 +226,12 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	end
 end
 
+function __fundle_version -d "prints fundle version"
+	echo $__fundle_current_version
+end
+
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | plugins | install | help)"
+	echo "usage: fundle (init | plugin | plugins | install | self-update | version | help)"
 end
 
 function __fundle_plugins -d "list registered plugins"
@@ -238,6 +271,10 @@ function fundle -d "run fundle"
 			__fundle_plugins $sub_args
 		case "install"
 			__fundle_install $sub_args
+		case "self-update"
+			__fundle_self_update
+		case "version" -v --version
+			__fundle_version
 		case "help" -h --help
 			__fundle_print_help
 			return 0

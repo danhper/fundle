@@ -284,6 +284,33 @@ function test___fundle_init
 	rm -rf $dir/fundle
 end
 
+function test___fundle_compare_versions
+	if test (__fundle_compare_versions 0.1.0 0.1.1) != "lt"
+		echo '__fundle_compare_versions should return: 0.1.0 < 0.1.1'
+		return 1
+	end
+
+	if test (__fundle_compare_versions 0.1.2 0.1.1) != "gt"
+		echo '__fundle_compare_versions should return: 0.1.2 > 0.1.1'
+		return 1
+	end
+
+	if test (__fundle_compare_versions 0.1.2 0.1.2) != "eq"
+		echo '__fundle_compare_versions should return: 0.1.2 = 0.1.2'
+		return 1
+	end
+
+	if test (__fundle_compare_versions 0.10.0 0.2.2) != "gt"
+		echo '__fundle_compare_versions should return: 0.10.0 > 0.2.2'
+		return 1
+	end
+
+	if test (__fundle_compare_versions 0.10.0 1.2.2) != "lt"
+		echo '__fundle_compare_versions should return: 0.10.0 < 1.2.2'
+		return 1
+	end
+end
+
 function test___fundle_install
 	set -g fundle_plugins_dir $dir/fundle
 	set -e __fundle_plugin_names

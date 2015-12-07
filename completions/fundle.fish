@@ -2,6 +2,8 @@ complete -f -c fundle -n '__fish_prog_needs_command' -a init -d "load all plugin
 complete -f -c fundle -n '__fish_prog_needs_command' -a plugin -d "add a plugin"
 complete -f -c fundle -n '__fish_prog_needs_command' -a plugins -d "list plugins"
 complete -f -c fundle -n '__fish_prog_needs_command' -a install -d "install all plugins"
+complete -f -c fundle -n '__fish_prog_needs_command' -a self-update -d "update fundle"
+complete -f -c fundle -n '__fish_prog_needs_command' -a version -d "display fundle version"
 complete -f -c fundle -n '__fish_prog_needs_command' -a help -d "display helps"
 complete -f -c fundle -n '__fish_prog_using_command install' -s u -l upgrade -d "upgrade existing plugins"
 complete -f -c fundle -n '__fish_prog_using_command plugins' -s s -l short -d "show a short list with plugin names only"

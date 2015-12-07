@@ -26,6 +26,10 @@ fundle is available on the AUR, so you can install it system wide with
 yaourt -S fundle-git
 ```
 
+### Updating
+
+From fundle 0.2.0 and onwards, you can use `fundle self-update` to update fundle.
+
 ## Usage
 
 ### Sample `config.fish`
@@ -113,6 +117,8 @@ to upgrade the plugins.
 * `fundle install [-u]`: Install (or update) all plugins
 * `fundle plugin PLUGIN [PLUGIN_URL]`: Add a plugin to fundle
 * `fundle plugins [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle self-update`: Updates fundle to the latest version
+* `fundle version`: Displays the current version of fundle
 * `fundle help`: Displays available commands
 
 Completions are available in the [completions/fundle.fish](./completions/fundle.fish).
@@ -183,5 +189,6 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
-* 2015-12-7: Fix bug with dependency loading in `fundle init`
+* 2015-12-7 (v0.2.0): Add `self-update` command
+* 2015-12-7 (v0.1.0): Fix bug with dependency loading in `fundle init`
 * 2015-11-24: Allow the use of `#commit-ish` when using plugin repo. Checkout repository `commit-ish` instead of using master branch.
