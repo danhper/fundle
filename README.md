@@ -183,4 +183,5 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2015-12-7: Fix bug with dependency loading in `fundle init`
 * 2015-11-24: Allow the use of `#commit-ish` when using plugin repo. Checkout repository `commit-ish` instead of using master branch.

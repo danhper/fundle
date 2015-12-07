@@ -112,7 +112,15 @@ Try reloading your shell if you just edited your configuration."
 		return 1
 	end
 
-	for plugin in $__fundle_plugin_names
+	set -l plugins  $__fundle_plugin_names
+	set -l original_plugins_count (count (__fundle_plugins -s))
+
+	for plugin in $plugins
+		# $argv have already been seen in previous '__fundle_init' run
+		if contains $plugin $argv
+			continue
+		end
+
 		set -l plugin_dir "$fundle_dir/$plugin"
 
 		if not test -d $plugin_dir
@@ -142,6 +150,13 @@ Try reloading your shell if you just edited your configuration."
 		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
 			source $f
 		end
+	end
+
+	# if plugins count increase after init, new plugins have dependencies
+	# init new plugins dependencies if any
+	if test (count (__fundle_plugins -s)) -gt $original_plugins_count
+		set -l initialized_plugins $argv $plugins
+		__fundle_init $seen_plugins
 	end
 end
 

@@ -243,7 +243,7 @@ function test___fundle_init
 
 	mkdir -p $dir/fundle
 	cp -r $dir/fixtures/foo $dir/fundle/foo
-	__fundle_plugin 'foo/with_init'
+	__fundle_plugin 'foo/with_dependency' # this should recursively load 'foo/with_init'
 	__fundle_plugin 'foo/without_init'
 
 	set -l res (__fundle_init)
