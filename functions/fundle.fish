@@ -27,7 +27,7 @@ function __fundle_self_update -d "updates fundle"
 		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
 		set -l tmp_file (mktemp)
 		set -l update_message "fundle has been updated to version $latest"
-		wget --quiet -O $tmp_file $file_url; and mv $tmp_file (status -f); and echo $update_message; and return 0
+		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and return 0
 	end
 end
 
