@@ -172,6 +172,13 @@ function __fundle_load_plugin -a plugin -a fundle_dir -d "load a plugin"
 	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
 end
 
+function __fundle_profile -d "runs a function in profile mode"
+	set -l start_time (date +%s%N)
+	eval $argv
+	set -l ellapsed_time (math \((date +%s%N) - $start_time\) / 1000)
+	echo "$argv": {$ellapsed_time}us
+end
+
 function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
 
@@ -184,9 +191,17 @@ Try reloading your shell if you just edited your configuration."
 
 	set -l plugins  $__fundle_plugin_names
 	set -l original_plugins_count (count (__fundle_plugins -s))
+	set -l profile 0
+	if begin; contains -- -p $argv; or contains -- --profile $argv; end
+		set profile 1
+	end
 
 	for plugin in $plugins
-		__fundle_load_plugin $plugin $fundle_dir
+		if test $profile -eq 1
+			__fundle_profile __fundle_load_plugin $plugin $fundle_dir
+		else
+			__fundle_load_plugin $plugin $fundle_dir
+		end
 	end
 
 	# if plugins count increase after init, new plugins have dependencies
