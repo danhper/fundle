@@ -24,6 +24,14 @@ function __fundle_profile -d "runs a function in profile mode"
 	echo "$argv": {$ellapsed_time}us
 end
 
+function __fundle_profile_or_run -a profile
+	if test $profile -eq 1
+		__fundle_profile $argv[2..-1]
+	else
+		eval $argv[2..-1]
+	end
+end
+
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
 	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
@@ -180,15 +188,12 @@ function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plug
 
 	set -l dependencies (echo -s \n$plugins \n$__fundle_plugin_names | sed -e '/^$/d' | sort | uniq -u)
 	for dependency in $dependencies
-		if test $profile -eq 1
-			__fundle_profile __fundle_load_plugin $dependency $fundle_dir 1
-		else
-			__fundle_load_plugin $dependency $fundle_dir 0
-		end
+		__fundle_profile_or_run $profile __fundle_load_plugin $dependency $fundle_dir $profile
 	end
 
 	emit "init_$plugin_name" $plugin_dir
 end
+
 
 function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
@@ -206,11 +211,7 @@ Try reloading your shell if you just edited your configuration."
 	end
 
 	for plugin in $__fundle_plugin_names
-		if test $profile -eq 1
-			__fundle_profile __fundle_load_plugin $plugin $fundle_dir 1
-		else
-			__fundle_load_plugin $plugin $fundle_dir 0
-		end
+		__fundle_profile_or_run $profile __fundle_load_plugin $plugin $fundle_dir $profile
 	end
 end
 

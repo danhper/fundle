@@ -168,6 +168,31 @@ missing dependencies when installing the plugin.
 I created a minimal example in [fish-nvm](https://github.com/tuvistavie/fish-nvm),
 which depends on [edc/bass](https://github.com/edc/bass).
 
+## Profiling
+
+Obviously, adding plugins makes the shell startup slower. It should usually be short enough,
+but if you feel your shell is becoming to slow, fundle has a very basic profiling
+mode to help you.
+
+All you need to do is to change
+
+```
+fundle init
+```
+
+to
+
+```
+fundle init --profile
+```
+
+in your `config.fish` and fundle will print the time it took to load each plugin.
+
+NOTE: this functionality simply uses the `date` command, so it prints the real time,
+not the CPU time, but it should usually be enough to detect if something is wrong.
+NOTE: when a plugin include dependencies, the load time for each dependency is added to the
+parent plugin load time.
+
 ## Compatible plugins
 
 Most [oh-my-fish plugins](https://github.com/oh-my-fish) should work out of the box
@@ -190,6 +215,7 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2015-12-14 (v0.3.0): Fix dependency load order. Add profiling mode.
 * 2015-12-14 (v0.2.2): Emit plugin initialization event
 * 2015-12-7  (v0.2.1): Use `curl` instead of `wget` for `self-update`
 * 2015-12-7  (v0.2.0): Add `self-update` command
