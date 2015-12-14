@@ -189,7 +189,7 @@ function test___fundle_plugin
 	end
 end
 
-function test___fundle_plugins
+function test___fundle_list
 	set -e __fundle_plugin_names
 	set -e __fundle_plugin_urls
 	set -g fundle_plugins_dir $dir/fundle
@@ -197,8 +197,8 @@ function test___fundle_plugins
 	__fundle_plugin 'foo/with_init'
 	__fundle_plugin 'foo/without_init'
 
-	if test (count (__fundle_plugins -s)) -ne 2
-		echo '__fundle_plugins should return all registered plugins'
+	if test (count (__fundle_list -s)) -ne 2
+		echo '__fundle_list should return all registered plugins'
 		return 1
 	end
 
@@ -207,10 +207,10 @@ function test___fundle_plugins
 
 	__fundle_plugin 'foo/with_init' '/foo/bar'
 
-	set -l actual (__fundle_plugins)
+	set -l actual (__fundle_list)
 	set -l expected (echo -e "foo/with_init\n\t/foo/bar")
 	if test "$actual" != "$expected"
-		echo '__fundle_plugins should return plugin name and url'
+		echo '__fundle_list should return plugin name and url'
 		return 1
 	end
 end

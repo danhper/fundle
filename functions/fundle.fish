@@ -1,4 +1,4 @@
-set __fundle_current_version '0.3.0'
+set __fundle_current_version '0.3.1'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -224,12 +224,12 @@ function __fundle_install -d "install plugin"
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
 
-	set -l original_plugins_count (count (__fundle_plugins -s))
+	set -l original_plugins_count (count (__fundle_list -s))
 	__fundle_init
 
 	# if plugins count increase after init, new plugins have dependencies
 	# install new plugins dependencies if any
-	if test (count (__fundle_plugins -s)) -gt $original_plugins_count
+	if test (count (__fundle_list -s)) -gt $original_plugins_count
 		__fundle_install $argv
 	end
 end
@@ -257,10 +257,10 @@ function __fundle_version -d "prints fundle version"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | plugins | install | self-update | version | help)"
+	echo "usage: fundle (init | plugin | list | install | self-update | version | help)"
 end
 
-function __fundle_plugins -d "list registered plugins"
+function __fundle_list -d "list registered plugins"
 	if begin; contains -- -s $argv; or contains -- --short $argv; end
 		for name in $__fundle_plugin_names
 			echo $name
@@ -293,8 +293,10 @@ function fundle -d "run fundle"
 			__fundle_init $sub_args
 		case "plugin"
 			__fundle_plugin $sub_args
+		case "list"
+			__fundle_list $sub_args
 		case "plugins"
-			__fundle_plugins $sub_args
+			echo "'fundle plugins' has been replaced by 'fundle list'"
 		case "install"
 			__fundle_install $sub_args
 		case "self-update"
