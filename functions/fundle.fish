@@ -17,6 +17,13 @@ function __fundle_compare_versions -a version1 -a version2
 	echo -n "eq"; and return 0
 end
 
+function __fundle_profile -d "runs a function in profile mode"
+	set -l start_time (date +%s%N)
+	eval $argv
+	set -l ellapsed_time (math \((date +%s%N) - $start_time\) / 1000)
+	echo "$argv": {$ellapsed_time}us
+end
+
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
 	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
@@ -131,7 +138,7 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
 end
 
-function __fundle_load_plugin -a plugin -a fundle_dir -d "load a plugin"
+function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plugin"
 	if begin; set -q __fundle_loaded_plugins; and contains $plugin $__fundle_loaded_plugins; end
 		return 0
 	end
@@ -143,11 +150,12 @@ function __fundle_load_plugin -a plugin -a fundle_dir -d "load a plugin"
 		return 0
 	end
 
-	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin//)
+	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin-//)
 	set -l init_file "$plugin_dir/init.fish"
 	set -l plugin_file "$plugin_dir/$plugin_name.fish"
 	set -l functions_dir "$plugin_dir/functions"
 	set -l completions_dir  "$plugin_dir/completions"
+	set -l plugins $__fundle_plugin_names
 
 	if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
 		set fish_function_path $functions_dir $fish_function_path
@@ -167,16 +175,19 @@ function __fundle_load_plugin -a plugin -a fundle_dir -d "load a plugin"
 			source $f
 		end
 	end
-	emit "init_$plugin_name" $plugin_dir
 
 	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
-end
 
-function __fundle_profile -d "runs a function in profile mode"
-	set -l start_time (date +%s%N)
-	eval $argv
-	set -l ellapsed_time (math \((date +%s%N) - $start_time\) / 1000)
-	echo "$argv": {$ellapsed_time}us
+	set -l dependencies (echo -s \n$plugins \n$__fundle_plugin_names | sed -e '/^$/d' | sort | uniq -u)
+	for dependency in $dependencies
+		if test $profile -eq 1
+			__fundle_profile __fundle_load_plugin $dependency $fundle_dir 1
+		else
+			__fundle_load_plugin $dependency $fundle_dir 0
+		end
+	end
+
+	emit "init_$plugin_name" $plugin_dir
 end
 
 function __fundle_init -d "initialize fundle"
@@ -189,26 +200,17 @@ Try reloading your shell if you just edited your configuration."
 		return 1
 	end
 
-	set -l plugins  $__fundle_plugin_names
-	set -l original_plugins_count (count (__fundle_plugins -s))
 	set -l profile 0
 	if begin; contains -- -p $argv; or contains -- --profile $argv; end
 		set profile 1
 	end
 
-	for plugin in $plugins
+	for plugin in $__fundle_plugin_names
 		if test $profile -eq 1
-			__fundle_profile __fundle_load_plugin $plugin $fundle_dir
+			__fundle_profile __fundle_load_plugin $plugin $fundle_dir 1
 		else
-			__fundle_load_plugin $plugin $fundle_dir
+			__fundle_load_plugin $plugin $fundle_dir 0
 		end
-	end
-
-	# if plugins count increase after init, new plugins have dependencies
-	# init new plugins dependencies if any
-	if test (count (__fundle_plugins -s)) -gt $original_plugins_count
-		set -l initialized_plugins $argv $plugins
-		__fundle_init $initialized_plugins
 	end
 end
 
