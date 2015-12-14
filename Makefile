@@ -8,5 +8,6 @@ prepare:
 	sudo add-apt-repository -y $(PPA)
 	sudo apt-get update
 	sudo apt-get -y install fish
+	fish --version
 
 .PHONY: test
