@@ -175,8 +175,6 @@ function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plug
 
 	if test -f $init_file
 		source $init_file
-	else if test -f $plugin_file
-		source $plugin_file
 	else
 		# read all *.fish files if no init.fish found
 		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")

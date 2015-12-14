@@ -215,6 +215,7 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2015-12-14 (v0.3.1): Fix incompatibility with oh-my-fish. Rename `plugins` to `list`.
 * 2015-12-14 (v0.3.0): Fix dependency load order. Add profiling mode.
 * 2015-12-14 (v0.2.2): Emit plugin initialization event
 * 2015-12-7  (v0.2.1): Use `curl` instead of `wget` for `self-update`
