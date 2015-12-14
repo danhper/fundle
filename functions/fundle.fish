@@ -1,4 +1,4 @@
-set __fundle_current_version '0.2.1'
+set __fundle_current_version '0.2.2'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -131,6 +131,47 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
 end
 
+function __fundle_load_plugin -a plugin -a fundle_dir -d "load a plugin"
+	if begin; set -q __fundle_loaded_plugins; and contains $plugin $__fundle_loaded_plugins; end
+		return 0
+	end
+
+	set -l plugin_dir "$fundle_dir/$plugin"
+
+	if not test -d $plugin_dir
+		__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
+		return 0
+	end
+
+	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin//)
+	set -l init_file "$plugin_dir/init.fish"
+	set -l plugin_file "$plugin_dir/$plugin_name.fish"
+	set -l functions_dir "$plugin_dir/functions"
+	set -l completions_dir  "$plugin_dir/completions"
+
+	if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
+		set fish_function_path $functions_dir $fish_function_path
+	end
+
+	if begin; test -d $completions_dir; and not contains $completions_dir $fish_complete_path; end
+		set fish_complete_path $completions_dir $fish_complete_path
+	end
+
+	if test -f $init_file
+		source $init_file
+	else if test -f $plugin_file
+		source $plugin_file
+	else
+		# read all *.fish files if no init.fish found
+		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
+			source $f
+		end
+	end
+	emit "init_$plugin_name" $plugin_dir
+
+	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
+end
+
 function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
 
@@ -145,47 +186,14 @@ Try reloading your shell if you just edited your configuration."
 	set -l original_plugins_count (count (__fundle_plugins -s))
 
 	for plugin in $plugins
-		# $argv have already been seen in previous '__fundle_init' run
-		if contains $plugin $argv
-			continue
-		end
-
-		set -l plugin_dir "$fundle_dir/$plugin"
-
-		if not test -d $plugin_dir
-			__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
-			continue
-		end
-
-		set -l init_file "$plugin_dir/init.fish"
-		set -l functions_dir "$plugin_dir/functions"
-		set -l completions_dir  "$plugin_dir/completions"
-
-		if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
-			set fish_function_path $functions_dir $fish_function_path
-		end
-
-		if begin; test -d $completions_dir; and not contains $completions_dir $fish_complete_path; end
-			set fish_complete_path $completions_dir $fish_complete_path
-		end
-
-		if test -f $init_file
-			source $init_file
-			# if init.fish found, do not read other files
-			continue
-		end
-
-		# read all *.fish files if no init.fish found
-		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
-			source $f
-		end
+		__fundle_load_plugin $plugin $fundle_dir
 	end
 
 	# if plugins count increase after init, new plugins have dependencies
 	# init new plugins dependencies if any
 	if test (count (__fundle_plugins -s)) -gt $original_plugins_count
 		set -l initialized_plugins $argv $plugins
-		__fundle_init $seen_plugins
+		__fundle_init $initialized_plugins
 	end
 end
 

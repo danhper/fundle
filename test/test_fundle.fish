@@ -331,6 +331,7 @@ function test___fundle_install
 
 	set -e __fundle_plugin_names
 	set -e __fundle_plugin_urls
+	set -e __fundle_loaded_plugins
 
 	__fundle_plugin 'foo/with_dependency' $dir/fixtures/foo/with_dependency
 	set -l res (__fundle_install ^&1)
