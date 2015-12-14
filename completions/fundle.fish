@@ -7,3 +7,4 @@ complete -f -c fundle -n '__fish_prog_needs_command' -a version -d "display fund
 complete -f -c fundle -n '__fish_prog_needs_command' -a help -d "display helps"
 complete -f -c fundle -n '__fish_prog_using_command install' -s u -l upgrade -d "upgrade existing plugins"
 complete -f -c fundle -n '__fish_prog_using_command plugins' -s s -l short -d "show a short list with plugin names only"
+complete -f -c fundle -n '__fish_prog_using_command init' -s p -l profile -d "profile time for loading each plugin"
