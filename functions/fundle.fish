@@ -160,7 +160,6 @@ function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plug
 
 	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin-//)
 	set -l init_file "$plugin_dir/init.fish"
-	set -l plugin_file "$plugin_dir/$plugin_name.fish"
 	set -l functions_dir "$plugin_dir/functions"
 	set -l completions_dir  "$plugin_dir/completions"
 	set -l plugins $__fundle_plugin_names
