@@ -15,6 +15,7 @@ you can use the [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my
 Just drop [fundle.fish](functions/fundle.fish) in your `~/.config/fish/functions` directory and you are done.
 
 ```
+mkdir -p ~/.config/fish/functions
 wget https://raw.githubusercontent.com/tuvistavie/fundle/master/functions/fundle.fish -O ~/.config/fish/functions/fundle.fish
 ```
 
