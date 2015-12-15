@@ -72,7 +72,7 @@ end
 function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
 	set -l sha (git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
 	if test $status -eq 0
-		echo $sha
+		echo -n $sha
 		return 0
 	end
 	return 1
