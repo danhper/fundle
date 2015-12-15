@@ -284,6 +284,23 @@ function test___fundle_init
 	rm -rf $dir/fundle
 end
 
+function test___fundle_init_profile
+	set -e __fundle_plugin_names
+	set -e __fundle_plugin_urls
+	set -g fundle_plugins_dir $dir/fundle
+
+	mkdir -p $dir/fundle
+	cp -r $dir/fixtures/foo $dir/fundle/foo
+	__fundle_plugin 'foo/with_init'
+	set -l res (__fundle_init --profile)
+	if echo $res | grep -v 'us'
+		echo "__fundle_init --profile should output the load time in us"
+		return 1
+	end
+
+	rm -rf $dir/fundle
+end
+
 function test___fundle_compare_versions
 	if test (__fundle_compare_versions 0.1.0 0.1.1) != "lt"
 		echo '__fundle_compare_versions should return: 0.1.0 < 0.1.1'

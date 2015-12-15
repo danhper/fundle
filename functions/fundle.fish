@@ -1,4 +1,4 @@
-set __fundle_current_version '0.3.1'
+set __fundle_current_version '0.3.2'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -18,9 +18,9 @@ function __fundle_compare_versions -a version1 -a version2
 end
 
 function __fundle_profile -d "runs a function in profile mode"
-	set -l start_time (date +%s%N)
+	set -l start_time (__fundle_date +%s%N)
 	eval $argv
-	set -l ellapsed_time (math \((date +%s%N) - $start_time\) / 1000)
+	set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
 	echo "$argv": {$ellapsed_time}us
 end
 
@@ -30,6 +30,16 @@ function __fundle_profile_or_run -a profile
 	else
 		eval $argv[2..-1]
 	end
+end
+
+function __fundle_date -d "returns a date"
+	set -l d (date +%s%N)
+	if echo $d | grep -v 'N' > /dev/null ^&1
+		echo $d
+	else
+		gdate +%s%N
+	end
+	return 0
 end
 
 function __fundle_self_update -d "updates fundle"
@@ -91,6 +101,17 @@ function __fundle_no_git -d "check if git is installed"
 		echo "git needs to be installed and in the path"
 		return 0
 	end
+	return 1
+end
+
+function __fundle_check_date -d "check date"
+	if date +%s%N | grep -v 'N' > /dev/null ^&1
+		return 0
+	end
+	if which gdate > /dev/null ^&1
+		return 0
+	end
+	echo "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX"
 	return 1
 end
 
@@ -203,7 +224,7 @@ Try reloading your shell if you just edited your configuration."
 	end
 
 	set -l profile 0
-	if begin; contains -- -p $argv; or contains -- --profile $argv; end
+	if begin; contains -- -p $argv; or contains -- --profile $argv; and __fundle_check_date; end
 		set profile 1
 	end
 
