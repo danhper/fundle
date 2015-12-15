@@ -18,9 +18,9 @@ function __fundle_compare_versions -a version1 -a version2
 end
 
 function __fundle_profile -d "runs a function in profile mode"
-	set -l start_time (date +%s%N)
+	set -l start_time (__fundle_date +%s%N)
 	eval $argv
-	set -l ellapsed_time (math \((date +%s%N) - $start_time\) / 1000)
+	set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
 	echo "$argv": {$ellapsed_time}us
 end
 
@@ -33,11 +33,11 @@ function __fundle_profile_or_run -a profile
 end
 
 function __fundle_date -d "returns a date"
-	set -l d (date %s%N)
+	set -l d (date +%s%N)
 	if echo $d | grep -v 'N' > /dev/null ^&1
 		echo $d
 	else
-		gdate %s%N | grep -v 'N'
+		gdate +%s%N
 	end
 	return 0
 end
