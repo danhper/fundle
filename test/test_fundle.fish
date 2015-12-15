@@ -56,7 +56,7 @@ function test___fundle_url_rev
 	end
 end
 
-function test___fundle_url_rev
+function test___fundle_remote_url
 	set -l remote 'https://github.com/tuvistavie/fundle.git'
 
 	if test (__fundle_remote_url $remote) != $remote
