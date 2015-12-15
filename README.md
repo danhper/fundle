@@ -188,9 +188,11 @@ fundle init --profile
 
 in your `config.fish` and fundle will print the time it took to load each plugin.
 
-NOTE: this functionality simply uses the `date` command, so it prints the real time,
+NOTE:
+* You will need the `gdate` command on OSX. You can install it with `brew install coreutils`.
+* This functionality simply uses the `date` command, so it prints the real time,
 not the CPU time, but it should usually be enough to detect if something is wrong.
-NOTE: when a plugin include dependencies, the load time for each dependency is added to the
+* When a plugin include dependencies, the load time for each dependency is added to the
 parent plugin load time.
 
 ## Compatible plugins
