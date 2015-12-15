@@ -32,6 +32,16 @@ function __fundle_profile_or_run -a profile
 	end
 end
 
+function __fundle_date -d "returns a date"
+	set -l d (date %s%N)
+	if echo $d | grep -v 'N' > /dev/null ^&1
+		echo $d
+	else
+		gdate %s%N | grep -v 'N'
+	end
+	return 0
+end
+
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
 	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
@@ -91,6 +101,17 @@ function __fundle_no_git -d "check if git is installed"
 		echo "git needs to be installed and in the path"
 		return 0
 	end
+	return 1
+end
+
+function __fundle_check_date -d "check date"
+	if date +%s%N | grep -v 'N' > /dev/null ^&1
+		return 0
+	end
+	if which gdate > /dev/null ^&1
+		return 0
+	end
+	echo "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX"
 	return 1
 end
 
@@ -203,7 +224,7 @@ Try reloading your shell if you just edited your configuration."
 	end
 
 	set -l profile 0
-	if begin; contains -- -p $argv; or contains -- --profile $argv; end
+	if begin; contains -- -p $argv; or contains -- --profile $argv; and __fundle_check_date; end
 		set profile 1
 	end
 
