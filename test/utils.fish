@@ -1,37 +1,37 @@
 source $DIRNAME/helper.fish
 
 test "__fundle_plugins_dir: returns a default value when fundle_plugins_dir is not set"
-	(__fundle_plugins_dir) = "$HOME/.config/fish/fundle"
+	"$HOME/.config/fish/fundle" = (__fundle_plugins_dir)
 end
 
 set -g fundle_plugins_dir $DIRNAME/fundle
 test "__fundle_plugins_dir: returns fundle_plugins_dir when set"
-	(__fundle_plugins_dir) = "$DIRNAME/fundle"
+	"$DIRNAME/fundle" = (__fundle_plugins_dir)
 end
 
 test "__fundle_no_git: returns 0 when git is not on the path"
-	(__fundle_no_git) = "git needs to be installed and in the path"
+	"git needs to be installed and in the path" = (__fundle_no_git)
 end
 
 set -l plugin foo/with_init
 test "__fundle_get_url: defaults to github url"
-	(__fundle_get_url $plugin) = "https://github.com/$plugin.git"
+	"https://github.com/$plugin.git" = (__fundle_get_url $plugin)
 end
 
 set -l remote 'https://github.com/tuvistavie/fundle.git'
 test "__fundle_url_rev: defaults to master"
-	(__fundle_url_rev $remote) = 'master'
+	'master' = (__fundle_url_rev $remote)
 end
 
 set -l revision "foobar"
 test "__fundle_url_rev: parses revision"
-	(__fundle_url_rev "$remote#$revision") = $revision
+	$revision = (__fundle_url_rev "$remote#$revision")
 end
 
 test "__fundle_remote_url: keeps remote without revision intact"
-	(__fundle_remote_url $remote) = $remote
+	$remote = (__fundle_remote_url $remote)
 end
 
 test "__fundle_remote_url: strips the revision from the URL"
-	(__fundle_remote_url "$remote#$branch") = $remote
+	$remote = (__fundle_remote_url "$remote#$branch")
 end
