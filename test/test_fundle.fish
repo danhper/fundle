@@ -134,7 +134,7 @@ end
 function test___fundle_update_plugin
 	set -g fundle_plugins_dir $dir/fundle
 	set -l plugin foo/with_init
-	set -l repo foo/with_init
+	set -l repo $dir/fixtures/foo/with_init
 	__fundle_gitify $dir/fixtures/foo/with_init
 
 	# ignore output
@@ -144,9 +144,9 @@ function test___fundle_update_plugin
 		return 1
 	end
 
-	set -l res (__fundle_install_plugin $plugin $repo > /dev/null 2>&1)
-	set -l res (__fundle_update_plugin $plugin $repo > /dev/null 2>&1)
-	if test $status -eq 0
+	set -l res (__fundle_install_plugin $plugin $repo > /dev/null ^&1)
+	set -l res (__fundle_update_plugin $fundle_plugins_dir/$plugin/.git $repo > /dev/null ^&1)
+	if test $status -ne 0
 		echo '__fundle_update_plugin should succeed when plugin is present'
 		return 1
 	end
