@@ -87,7 +87,7 @@ function __fundle_plugins_dir -d "returns fundle directory"
 end
 
 function __fundle_no_git -d "check if git is installed"
-	if not which git > /dev/null
+	if not which git > /dev/null ^&1
 		echo "git needs to be installed and in the path"
 		return 0
 	end
