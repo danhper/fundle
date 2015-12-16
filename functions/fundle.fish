@@ -50,7 +50,7 @@ function __fundle_self_update -d "updates fundle"
 	else
 		set -l file_url_template 'https://raw.githubusercontent.com/tuvistavie/fundle/VERSION/functions/fundle.fish'
 		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
-		set -l tmp_file (mktemp)
+		set -l tmp_file (mktemp /tmp/fundle.XXX)
 		set -l update_message "fundle has been updated to version $latest"
 		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and return 0
 	end
@@ -72,7 +72,7 @@ end
 function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
 	set -l sha (git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
 	if test $status -eq 0
-		echo $sha
+		echo -n $sha
 		return 0
 	end
 	return 1
