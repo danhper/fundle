@@ -50,7 +50,7 @@ function __fundle_self_update -d "updates fundle"
 	else
 		set -l file_url_template 'https://raw.githubusercontent.com/tuvistavie/fundle/VERSION/functions/fundle.fish'
 		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
-		set -l tmp_file (mktemp)
+		set -l tmp_file (mktemp /tmp/fundle.XXX)
 		set -l update_message "fundle has been updated to version $latest"
 		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and return 0
 	end
