@@ -53,6 +53,6 @@ test "$TESTNAME loads plugin functions"
 	(functions -q my_plugin_function) 0 -eq $status
 end
 
-test "$TESTNAME with profile should output profiling info"
+test "$TESTNAME with profile outputs profiling info"
 	(__fundle_init --profile | grep 'us' > /dev/null) 0 -eq $status
 end

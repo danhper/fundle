@@ -1,7 +1,7 @@
 source $DIRNAME/helper.fish
 
 function -S setup
-	__fundle_set_tmpdir
+	__fundle_common_setup
 	set plugin 'foo/with_init'
 	set repo $DIRNAME/fixtures/$plugin
 	__fundle_gitify $repo
