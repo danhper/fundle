@@ -117,7 +117,7 @@ to upgrade the plugins.
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install [-u]`: Install (or update) all plugins
 * `fundle plugin PLUGIN [PLUGIN_URL]`: Add a plugin to fundle
-* `fundle plugins [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
 * `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
 * `fundle help`: Displays available commands
