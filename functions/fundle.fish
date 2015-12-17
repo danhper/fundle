@@ -254,20 +254,75 @@ end
 
 function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
-	switch (count $argv)
-		case 0
-			echo "plugin needs at least one parameter."
+	set -l plugin_path "/"
+	set -l argv_count (count $argv)
+	if test $argv_count -eq 0
+		echo "usage: fundle plugin NAME [--url] URL [--path PATH]"
+		return 1
+	else if test $argv_count -gt 1
+		set -l state "start"
+		for arg in $argv[2..-1]
+			switch $state
+			case "start"
+				switch $arg
+				case '--url'
+					set state "expect_url"
+				case '--path'
+					set state "expect_path"
+				case '--*'
+					echo "unknown flag $arg"
+					return 1
+				case '*'
+					set plugin_url $arg
+					set state "finish"
+				end
+			case "expect_url"
+				switch $arg
+				case '--*'
+					echo "url expected, got '$arg'"
+					return 1
+				case '*'
+					set plugin_url $arg
+					set state "finish"
+				end
+			case "expect_path"
+				switch $arg
+				case '--*'
+					echo "path expected, got '$arg'"
+					return 1
+				case '*'
+					set plugin_path $arg
+					set state "finish"
+				end
+			case "finish"
+				switch $arg
+				case '--url'
+					set state "expect_url"
+				case '--path'
+					set state "expect_path"
+				case '*'
+					echo "flag expected, got '$arg'"
+					return 1
+				end
+			end
+		end
+		if test "$state" != "finish"
+			echo "value expected"
 			return 1
-		case 1
-			set plugin_url (__fundle_get_url $name)
-		case 2
-			set plugin_url $argv[2]
+		end
+	end
+	if test -z "$plugin_url"
+		set plugin_url (__fundle_get_url $name)
 	end
 
 	if not contains $name $__fundle_plugin_names
 		set -g __fundle_plugin_names $__fundle_plugin_names $name
 		set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url
+		set -g __fundle_plugin_paths $__fundle_plugin_paths $plugin_path
 	end
+end
+
+function __fundle_plugin_parse -d "parse plugin arguments"
 end
 
 function __fundle_version -d "prints fundle version"
