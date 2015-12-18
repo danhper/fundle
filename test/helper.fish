@@ -13,6 +13,7 @@ end
 function -S __fundle_cleanup_plugins
 	set -e __fundle_plugin_names
 	set -e __fundle_plugin_urls
+	set -e __fundle_plugin_paths
 	set -e __fundle_loaded_plugins
 	return 0
 end

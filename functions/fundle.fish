@@ -322,9 +322,6 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	end
 end
 
-function __fundle_plugin_parse -d "parse plugin arguments"
-end
-
 function __fundle_version -d "prints fundle version"
 	echo $__fundle_current_version
 end
