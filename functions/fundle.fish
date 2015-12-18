@@ -4,6 +4,22 @@ function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
 end
 
+function __fundle_next_arg -a index
+	set -l args $argv[2..-1]
+	set -l arg_index (math $index + 1)
+	if test (count $args) -lt $arg_index
+		echo "missing argument for $args[$index]"
+		return 1
+	end
+	set -l arg $args[$arg_index]
+	switch $arg
+		case '--*'
+			echo "expected argument for $args[$index], got $arg"; and return 1
+		case '*'
+			echo $arg; and return 0
+	end
+end
+
 function __fundle_compare_versions -a version1 -a version2
 	for i in (__fundle_seq 3)
 		set -l v1 (echo $version1 | cut -d '.' -f $i)
@@ -258,64 +274,33 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
 	set -l plugin_path "."
 	set -l argv_count (count $argv)
+	set -l skip_next true
 	if test $argv_count -eq 0
 		echo "usage: fundle plugin NAME [--url] URL [--path PATH]"
 		return 1
 	else if test $argv_count -gt 1
 		set -l state "start"
-		for arg in $argv[2..-1]
-			switch $state
-			case "start"
-				switch $arg
+		for i in (__fundle_seq (count $argv))
+			test $skip_next = true; and set skip_next false; and continue
+			set -l arg $argv[$i]
+			switch $arg
 				case '--url'
-					set state "expect_url"
+					set plugin_url (__fundle_next_arg $i $argv)
+					test $status -eq 1; and echo $plugin_url; and return 1
+					set skip_next true
 				case '--path'
-					set state "expect_path"
+					set plugin_path (__fundle_next_arg $i $argv)
+					test $status -eq 1; and echo $plugin_path; and return 1
+					set skip_next true
 				case '--*'
-					echo "unknown flag $arg"
-					return 1
+					echo "unknown flag $arg"; and return 1
 				case '*'
+					test $i -ne 2; and echo "invalid argument $arg"; and return 1
 					set plugin_url $arg
-					set state "finish"
-				end
-			case "expect_url"
-				switch $arg
-				case '--*'
-					echo "url expected, got '$arg'"
-					return 1
-				case '*'
-					set plugin_url $arg
-					set state "finish"
-				end
-			case "expect_path"
-				switch $arg
-				case '--*'
-					echo "path expected, got '$arg'"
-					return 1
-				case '*'
-					set plugin_path $arg
-					set state "finish"
-				end
-			case "finish"
-				switch $arg
-				case '--url'
-					set state "expect_url"
-				case '--path'
-					set state "expect_path"
-				case '*'
-					echo "flag expected, got '$arg'"
-					return 1
-				end
 			end
 		end
-		if test "$state" != "finish"
-			echo "value expected"
-			return 1
-		end
 	end
-	if test -z "$plugin_url"
-		set plugin_url (__fundle_get_url $name)
-	end
+	test -z "$plugin_url"; and set plugin_url (__fundle_get_url $name)
 
 	if not contains $name $__fundle_plugin_names
 		set -g __fundle_plugin_names $__fundle_plugin_names $name
