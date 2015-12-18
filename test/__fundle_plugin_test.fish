@@ -20,7 +20,7 @@ test "$TESTNAME: adds plugins urls"
 end
 
 test "$TESTNAME: adds plugins paths"
-	7 -eq (count $__fundle_plugin_paths)
+	7 -eq (count $__fundle_plugin_name_paths)
 end
 
 test "$TESTNAME: adds names in order"
@@ -46,8 +46,8 @@ test "$TESTNAME: uses given url"
 end
 
 test "$TESTNAME: uses given path flag"
-	'path4' = $__fundle_plugin_paths[4] -a \
-	'path5' = $__fundle_plugin_paths[5] -a \
-	'path6' = $__fundle_plugin_paths[6] -a \
-	'path7' = $__fundle_plugin_paths[7]
+	'foo/path-flag:path4' = $__fundle_plugin_name_paths[4] -a \
+	'foo/url-path-flag:path5' = $__fundle_plugin_name_paths[5] -a \
+	'foo/url-flag-path-flag:path6' = $__fundle_plugin_name_paths[6] -a \
+	'foo/path-flag-url-flag:path7' = $__fundle_plugin_name_paths[7]
 end
