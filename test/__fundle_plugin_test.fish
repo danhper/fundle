@@ -24,30 +24,30 @@ test "$TESTNAME: adds plugins paths"
 end
 
 test "$TESTNAME: adds names in order"
-	'foo/bar' = $__fundle_plugin_names[1] -a \
-	'foo/baz' = $__fundle_plugin_names[2] -a \
-	'foo/url-flag' = $__fundle_plugin_names[3] -a \
-	'foo/path-flag' = $__fundle_plugin_names[4] -a \
-	'foo/url-path-flag' = $__fundle_plugin_names[5] -a \
-	'foo/url-flag-path-flag' = $__fundle_plugin_names[6] -a \
-	'foo/path-flag-url-flag' = $__fundle_plugin_names[7]
+	$__fundle_plugin_names[1] \
+	$__fundle_plugin_names[2] \
+	$__fundle_plugin_names[3] \
+	$__fundle_plugin_names[4] \
+	$__fundle_plugin_names[5] \
+	$__fundle_plugin_names[6] \
+	$__fundle_plugin_names[7] = (printf '%s\n' 'foo/bar' 'foo/baz' 'foo/url-flag' 'foo/path-flag' 'foo/url-path-flag' 'foo/url-flag-path-flag' 'foo/path-flag-url-flag')
 end
 
 test "$TESTNAME: uses default url when not given"
-	(__fundle_get_url 'foo/bar') = $__fundle_plugin_urls[1] -a \
-	(__fundle_get_url 'foo/path-flag') = $__fundle_plugin_urls[4]
+	(__fundle_get_url 'foo/bar'
+	 __fundle_get_url 'foo/path-flag') = (printf '%s\n' $__fundle_plugin_urls[1] $__fundle_plugin_urls[4])
 end
 
 test "$TESTNAME: uses given url"
-	'/path/to/baz' = $__fundle_plugin_urls[2] -a \
-	'/path/to/url-flag' = $__fundle_plugin_urls[5] -a \
-	'/path/to/url-flag' = $__fundle_plugin_urls[6] -a \
-	'/path/to/url-flag' = $__fundle_plugin_urls[7]
+	$__fundle_plugin_urls[2] \
+	$__fundle_plugin_urls[5] \
+	$__fundle_plugin_urls[6] \
+	$__fundle_plugin_urls[7] = (printf '%s\n' '/path/to/baz' '/path/to/url-flag' '/path/to/url-flag' '/path/to/url-flag')
 end
 
 test "$TESTNAME: uses given path flag"
-	'foo/path-flag:path4' = $__fundle_plugin_name_paths[4] -a \
-	'foo/url-path-flag:path5' = $__fundle_plugin_name_paths[5] -a \
-	'foo/url-flag-path-flag:path6' = $__fundle_plugin_name_paths[6] -a \
-	'foo/path-flag-url-flag:path7' = $__fundle_plugin_name_paths[7]
+	$__fundle_plugin_name_paths[4] \
+	$__fundle_plugin_name_paths[5] \
+	$__fundle_plugin_name_paths[6] \
+	$__fundle_plugin_name_paths[7] = (printf '%s\n' 'foo/path-flag:path4' 'foo/url-path-flag:path5' 'foo/url-flag-path-flag:path6' 'foo/path-flag-url-flag:path7')
 end
