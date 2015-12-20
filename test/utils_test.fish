@@ -34,18 +34,12 @@ test "__fundle_remote_url: strips the revision from the URL"
 	$remote = (__fundle_remote_url "$remote#$revision")
 end
 
-test "__fundle_compare_versions: compares patch version (lt)"
-	"lt" = (__fundle_compare_versions 0.1.0 0.1.1)
-end
-test "__fundle_compare_versions: compares patch version (gt)"
-	"gt" = (__fundle_compare_versions 0.1.2 0.1.1)
-end
-test "__fundle_compare_versions: compares patch version (eq)"
-	"eq" = (__fundle_compare_versions 0.1.2 0.1.2)
-end
-test "__fundle_compare_versions: compares minor version"
-	"gt" = (__fundle_compare_versions 0.10.0 0.2.2)
-end
-test "__fundle_compare_versions: compares major version"
-	"lt" = (__fundle_compare_versions 0.10.0 1.2.2)
+test "__fundle_compare_versions: compares using semver"
+	(printf "%s\n" "lt" "gt" "eq" "gt" "lt") = (printf "%s\n" \
+		(__fundle_compare_versions 0.1.0 0.1.1) \
+		(__fundle_compare_versions 0.1.2 0.1.1) \
+		(__fundle_compare_versions 0.1.2 0.1.2) \
+		(__fundle_compare_versions 0.10.0 0.2.2) \
+		(__fundle_compare_versions 0.10.0 1.2.2)
+	)
 end
