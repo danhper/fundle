@@ -5,6 +5,7 @@ function -S setup
 	cp -r $DIRNAME/fixtures/foo $DIRNAME/fundle/foo
 	__fundle_plugin 'foo/with_dependency' # this should recursively load 'foo/with_init'
 	__fundle_plugin 'foo/without_init'
+	__fundle_plugin 'foo/subfolder' --path 'plugin'
 	set output (__fundle_init)
 	set code $status
 end
@@ -42,15 +43,17 @@ test "$TESTNAME loads all .fish files when init.fish not present"
 end
 
 test "$TESTNAME adds functions directory to fish_function_path"
-	"$DIRNAME/fundle/foo/with_init/functions" = $fish_function_path
+	"$DIRNAME/fundle/foo/with_init/functions" \
+	"$DIRNAME/fundle/foo/subfolder/plugin/functions" = $fish_function_path
 end
 
 test "$TESTNAME adds completions directory to fish_complete_path"
-	"$DIRNAME/fundle/foo/with_init/completions" = $fish_complete_path
+	"$DIRNAME/fundle/foo/with_init/completions" \
+	"$DIRNAME/fundle/foo/subfolder/plugin/completions" = $fish_complete_path
 end
 
 test "$TESTNAME loads plugin functions"
-	(functions -q my_plugin_function) 0 -eq $status
+	(functions -q my_plugin_function my_subfolder_plugin_function) 0 -eq $status
 end
 
 test "$TESTNAME with profile outputs profiling info"

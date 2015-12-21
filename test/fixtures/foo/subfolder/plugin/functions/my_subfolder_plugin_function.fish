@@ -1,0 +1,2 @@
+function my_subfolder_plugin_function
+end
