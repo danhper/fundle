@@ -199,7 +199,6 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 	set -l init_file "$plugin_dir/init.fish"
 	set -l functions_dir "$plugin_dir/functions"
 	set -l completions_dir  "$plugin_dir/completions"
-	set -l plugins $__fundle_plugin_names
 	set -l plugin_paths $__fundle_plugin_name_paths
 
 	if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
