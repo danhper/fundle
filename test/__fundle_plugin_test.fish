@@ -3,12 +3,12 @@ source $DIRNAME/helper.fish
 function -S setup
 	__fundle_cleanup_plugins
 	__fundle_plugin 'foo/bar'
-	__fundle_plugin 'foo/baz' '/path/to/baz'
-	__fundle_plugin 'foo/url-flag' --url '/path/to/url-flag'
+	__fundle_plugin 'foo/baz' '/url/for/baz'
+	__fundle_plugin 'foo/url-flag' --url '/url/for/url-flag'
 	__fundle_plugin 'foo/path-flag' --path 'path4'
-	__fundle_plugin 'foo/url-path-flag' '/path/to/url-flag' --path 'path5'
-	__fundle_plugin 'foo/url-flag-path-flag' --url '/path/to/url-flag' --path 'path6'
-	__fundle_plugin 'foo/path-flag-url-flag' --path 'path7' --url '/path/to/url-flag'
+	__fundle_plugin 'foo/url-path-flag' '/url/for/url-path-flag' --path 'path5'
+	__fundle_plugin 'foo/url-flag-path-flag' --url '/url/for/url-flag-path-flag' --path 'path6'
+	__fundle_plugin 'foo/path-flag-url-flag' --path 'path7' --url '/url/for/path-flag-url-flag'
 end
 
 test "$TESTNAME: adds plugins names"
@@ -29,19 +29,20 @@ end
 
 test "$TESTNAME: uses default url when not given"
 	(__fundle_get_url 'foo/bar'
-	 __fundle_get_url 'foo/path-flag') = (printf '%s\n' $__fundle_plugin_urls[1] $__fundle_plugin_urls[4])
+	 __fundle_get_url 'foo/path-flag') = $__fundle_plugin_urls[1] $__fundle_plugin_urls[4]
 end
 
 test "$TESTNAME: uses given url"
-	$__fundle_plugin_urls[2] \
-	$__fundle_plugin_urls[5] \
-	$__fundle_plugin_urls[6] \
-	$__fundle_plugin_urls[7] = (printf '%s\n' '/path/to/baz' '/path/to/url-flag' '/path/to/url-flag' '/path/to/url-flag')
+	'/url/for/baz' \
+	'/url/for/url-flag' \
+	'/url/for/url-path-flag' \
+	'/url/for/url-flag-path-flag' \
+	'/url/for/path-flag-url-flag' = $__fundle_plugin_urls[2..3] $__fundle_plugin_urls[5..7]
 end
 
 test "$TESTNAME: uses given path flag"
-	$__fundle_plugin_name_paths[4] \
-	$__fundle_plugin_name_paths[5] \
-	$__fundle_plugin_name_paths[6] \
-	$__fundle_plugin_name_paths[7] = (printf '%s\n' 'foo/path-flag:path4' 'foo/url-path-flag:path5' 'foo/url-flag-path-flag:path6' 'foo/path-flag-url-flag:path7')
+	'foo/path-flag:path4' \
+	'foo/url-path-flag:path5' \
+	'foo/url-flag-path-flag:path6' \
+	'foo/path-flag-url-flag:path7' = $__fundle_plugin_name_paths[4..7]
 end
