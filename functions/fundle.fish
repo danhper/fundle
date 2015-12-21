@@ -274,8 +274,8 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_path "."
 	set -l argv_count (count $argv)
 	set -l skip_next true
-	if test $argv_count -eq 0
-		echo "usage: fundle plugin NAME [--url] URL [--path PATH]"
+	if test $argv_count -eq 0 -o -z "$argv"
+		echo "usage: fundle plugin NAME [[--url] URL] [--path PATH]"
 		return 1
 	else if test $argv_count -gt 1
 		set -l state "start"
