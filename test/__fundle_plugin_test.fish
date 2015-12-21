@@ -24,13 +24,7 @@ test "$TESTNAME: adds plugins paths"
 end
 
 test "$TESTNAME: adds names in order"
-	$__fundle_plugin_names[1] \
-	$__fundle_plugin_names[2] \
-	$__fundle_plugin_names[3] \
-	$__fundle_plugin_names[4] \
-	$__fundle_plugin_names[5] \
-	$__fundle_plugin_names[6] \
-	$__fundle_plugin_names[7] = (printf '%s\n' 'foo/bar' 'foo/baz' 'foo/url-flag' 'foo/path-flag' 'foo/url-path-flag' 'foo/url-flag-path-flag' 'foo/path-flag-url-flag')
+	'foo/bar foo/baz foo/url-flag foo/path-flag foo/url-path-flag foo/url-flag-path-flag foo/path-flag-url-flag' = "$__fundle_plugin_names"
 end
 
 test "$TESTNAME: uses default url when not given"
