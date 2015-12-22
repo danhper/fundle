@@ -4,6 +4,22 @@ function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
 end
 
+function __fundle_next_arg -a index
+	set -l args $argv[2..-1]
+	set -l arg_index (math $index + 1)
+	if test (count $args) -lt $arg_index
+		echo "missing argument for $args[$index]"
+		return 1
+	end
+	set -l arg $args[$arg_index]
+	switch $arg
+		case '--*'
+			echo "expected argument for $args[$index], got $arg"; and return 1
+		case '*'
+			echo $arg; and return 0
+	end
+end
+
 function __fundle_compare_versions -a version1 -a version2
 	for i in (__fundle_seq 3)
 		set -l v1 (echo $version1 | cut -d '.' -f $i)
@@ -167,12 +183,12 @@ function __fundle_show_doc_msg -d "show a link to fundle docs"
 	echo "See the docs for more info. https://github.com/tuvistavie/fundle"
 end
 
-function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plugin"
+function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "load a plugin"
 	if begin; set -q __fundle_loaded_plugins; and contains $plugin $__fundle_loaded_plugins; end
 		return 0
 	end
 
-	set -l plugin_dir "$fundle_dir/$plugin"
+	set -l plugin_dir (echo "$fundle_dir/$plugin/$path" | sed -e 's|/.$||')
 
 	if not test -d $plugin_dir
 		__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
@@ -183,7 +199,7 @@ function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plug
 	set -l init_file "$plugin_dir/init.fish"
 	set -l functions_dir "$plugin_dir/functions"
 	set -l completions_dir  "$plugin_dir/completions"
-	set -l plugins $__fundle_plugin_names
+	set -l plugin_paths $__fundle_plugin_name_paths
 
 	if begin; test -d $functions_dir; and not contains $functions_dir $fish_function_path; end
 		set fish_function_path $functions_dir $fish_function_path
@@ -204,14 +220,14 @@ function __fundle_load_plugin -a plugin -a fundle_dir -a profile -d "load a plug
 
 	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
 
-	set -l dependencies (echo -s \n$plugins \n$__fundle_plugin_names | sed -e '/^$/d' | sort | uniq -u)
+	set -l dependencies (echo -s \n$plugin_paths \n$__fundle_plugin_name_paths | sed -e '/^$/d' | sort | uniq -u)
 	for dependency in $dependencies
-		__fundle_profile_or_run $profile __fundle_load_plugin $dependency $fundle_dir $profile
+		echo $dependency | sed -e 's/:/ /' | read -l -a name_path
+		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	end
 
 	emit "init_$plugin_name" $plugin_dir
 end
-
 
 function __fundle_init -d "initialize fundle"
 	set -l fundle_dir (__fundle_plugins_dir)
@@ -228,8 +244,9 @@ Try reloading your shell if you just edited your configuration."
 		set profile 1
 	end
 
-	for plugin in $__fundle_plugin_names
-		__fundle_profile_or_run $profile __fundle_load_plugin $plugin $fundle_dir $profile
+	for name_path in $__fundle_plugin_name_paths
+		echo $name_path | sed -e 's/:/ /' | read -l -a name_path
+		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	end
 end
 
@@ -254,19 +271,40 @@ end
 
 function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
-	switch (count $argv)
-		case 0
-			echo "plugin needs at least one parameter."
-			return 1
-		case 1
-			set plugin_url (__fundle_get_url $name)
-		case 2
-			set plugin_url $argv[2]
+	set -l plugin_path "."
+	set -l argv_count (count $argv)
+	set -l skip_next true
+	if test $argv_count -eq 0 -o -z "$argv"
+		echo "usage: fundle plugin NAME [[--url] URL] [--path PATH]"
+		return 1
+	else if test $argv_count -gt 1
+		set -l state "start"
+		for i in (__fundle_seq (count $argv))
+			test $skip_next = true; and set skip_next false; and continue
+			set -l arg $argv[$i]
+			switch $arg
+				case '--url'
+					set plugin_url (__fundle_next_arg $i $argv)
+					test $status -eq 1; and echo $plugin_url; and return 1
+					set skip_next true
+				case '--path'
+					set plugin_path (__fundle_next_arg $i $argv)
+					test $status -eq 1; and echo $plugin_path; and return 1
+					set skip_next true
+				case '--*'
+					echo "unknown flag $arg"; and return 1
+				case '*'
+					test $i -ne 2; and echo "invalid argument $arg"; and return 1
+					set plugin_url $arg
+			end
+		end
 	end
+	test -z "$plugin_url"; and set plugin_url (__fundle_get_url $name)
 
 	if not contains $name $__fundle_plugin_names
 		set -g __fundle_plugin_names $__fundle_plugin_names $name
 		set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url
+		set -g __fundle_plugin_name_paths $__fundle_plugin_name_paths $name:$plugin_path
 	end
 end
 
