@@ -70,20 +70,27 @@ fundle plugin 'tuvistavie/fish-fastdir'
 
 will install the repository at https://github.com/tuvistavie/fish-fastdir.
 
-If you need to change the repository, you can pass it as a second argument and
+If you need to change the repository, you can pass it with `--url` and
 it will be passed directly to `git clone`:
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir' 'git@github.com:tuvistavie/fish-fastdir.git'
+fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git'
 ```
 
 You can also use a branch, tag or any [commit-ish](https://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html#_specifying_revisions) by appending `#commit-ish` to the URL. For example:
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir' 'git@github.com:tuvistavie/fish-fastdir.git#my-branch'
+fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git#my-branch'
 ```
 
 will use `my-branch`. If no commit-ish is passed, it will default to `master`.
+
+If the fish functions or completions are in a subdirectory of the repository, you can use
+`--path` to choose the path to load.
+
+```
+fundle plugin 'tmuxnator/tmuxinator' --path 'completion'
+```
 
 After having made all the calls to `fundle plugin`, you need to add
 
@@ -116,7 +123,9 @@ to upgrade the plugins.
 
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install [-u]`: Install (or update) all plugins
-* `fundle plugin PLUGIN [PLUGIN_URL]`: Add a plugin to fundle
+* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Add a plugin to fundle.
+  * `--url` set the URL to clone the plugin.
+  * `--path` set the plugin path (relative to the repository root)
 * `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
 * `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
@@ -217,6 +226,7 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2015-12-22 (v0.4.0): Add `--path` option, thanks to @Perlence.
 * 2015-12-16 (v0.3.2): Fix profiling in OSX.
 * 2015-12-14 (v0.3.1): Fix incompatibility with oh-my-fish. Rename `plugins` to `list`.
 * 2015-12-14 (v0.3.0): Fix dependency load order. Add profiling mode.

@@ -1,4 +1,4 @@
-set __fundle_current_version '0.3.2'
+set __fundle_current_version '0.4.0'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
