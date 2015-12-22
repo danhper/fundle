@@ -278,7 +278,6 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 		echo "usage: fundle plugin NAME [[--url] URL] [--path PATH]"
 		return 1
 	else if test $argv_count -gt 1
-		set -l state "start"
 		for i in (__fundle_seq (count $argv))
 			test $skip_next = true; and set skip_next false; and continue
 			set -l arg $argv[$i]
