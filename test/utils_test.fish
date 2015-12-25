@@ -42,7 +42,7 @@ test "__fundle_compare_versions: compares using semver"
 		(__fundle_compare_versions 0.10.0 0.2.2) \
 		(__fundle_compare_versions 0.10.0 1.2.2) \
 		(__fundle_compare_versions 1.0.0 1.0.0.beta0) \
-		(__fundle_compare_versions 1.0.0.beta-0 1.0.0.beta0) \
+		(__fundle_compare_versions 1.0.0.beta0 1.0.0.beta0) \
 		(__fundle_compare_versions 1.0.0.beta0 1.0.0.beta1)
 	)
 end
