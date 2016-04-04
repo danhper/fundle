@@ -58,7 +58,7 @@ function __fundle_date -d "returns a date"
 	return 0
 end
 
-function __fundle_self_update -d "updates fundle"
+function __fundle_upgrade -d "upgrades fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
 	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
 	if test (__fundle_compare_versions $latest (__fundle_version)) != "gt"
@@ -135,11 +135,6 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 	echo "https://github.com/$repo.git"
 end
 
-function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remote_url
-	git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
-	git --git-dir=$git_dir fetch -q ^ /dev/null
-end
-
 function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_url
 	if __fundle_no_git
 		return 1
@@ -148,20 +143,37 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	set -l plugin_dir (__fundle_plugins_dir)/$plugin
 	set -l git_dir $plugin_dir/.git
 	set -l remote_url (__fundle_remote_url $git_url)
-	set -l upgrade ""
-
-	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
-		set upgrade true
-	end
 
 	if test -d $plugin_dir
-		if test -n "$upgrade"
-			echo "Upgrading $plugin"
-			__fundle_update_plugin $git_dir $remote_url
-		else
-			echo "$argv[1] installed in $plugin_dir"
-			return 0
-		end
+		echo "$argv[1] installed in $plugin_dir"
+		return 0
+	else
+		echo "Installing $plugin"
+		git clone -q $remote_url $plugin_dir
+	end
+
+	set -l sha (__fundle_commit_sha $git_dir (__fundle_url_rev $git_url))
+	if test $status -eq 0
+		git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
+	else
+		echo "Could not upgrade $plugin"
+		return 1
+	end
+end
+
+function __fundle_update_plugin -d "updates the given plugin" -a plugin -a git_url
+	if __fundle_no_git
+		return 1
+	end
+
+	set -l plugin_dir (__fundle_plugins_dir)/$plugin
+	set -l git_dir $plugin_dir/.git
+	set -l remote_url (__fundle_remote_url $git_url)
+
+	if test -d $plugin_dir
+		echo "Upgrading $plugin"
+		git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
+		git --git-dir=$git_dir fetch -q ^ /dev/null
 	else
 		echo "Installing $plugin"
 		git clone -q $remote_url $plugin_dir
@@ -269,6 +281,21 @@ function __fundle_install -d "install plugin"
 	end
 end
 
+function __fundle_update -d "update plugin"
+	for i in (__fundle_seq (count $__fundle_plugin_names))
+		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
+	end
+
+	set -l original_plugins_count (count (__fundle_list -s))
+	__fundle_init
+
+	# if plugins count increase after init, new plugins have dependencies
+	# install new plugins dependencies if any
+	if test (count (__fundle_list -s)) -gt $original_plugins_count
+		__fundle_install $argv
+	end
+end
+
 function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
 	set -l plugin_path "."
@@ -312,7 +339,7 @@ function __fundle_version -d "prints fundle version"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | list | install | self-update | version | help)"
+	echo "usage: fundle (init | plugin | list | install | update | upgrade | version | help)"
 end
 
 function __fundle_list -d "list registered plugins"
@@ -354,8 +381,10 @@ function fundle -d "run fundle"
 			echo "'fundle plugins' has been replaced by 'fundle list'"
 		case "install"
 			__fundle_install $sub_args
-		case "self-update"
-			__fundle_self_update
+		case "update"
+			__fundle_update
+		case "upgrade"
+			__fundle_upgrade
 		case "version" -v --version
 			__fundle_version
 		case "help" -h --help
