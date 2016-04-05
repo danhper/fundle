@@ -29,7 +29,7 @@ yaourt -S fundle-git
 
 ### Updating
 
-From fundle 0.2.0 and onwards, you can use `fundle upgrade` to upgrade fundle.
+From fundle 0.2.0 and onwards, you can use `fundle self-update` to update fundle.
 
 ## Usage
 
@@ -123,12 +123,12 @@ to update the plugins.
 
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install`: Install all plugins
-* `fundle update`: Update all plugins
+* `fundle update`: Update all plugins (deprecates: `fundle install -u`)
 * `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
 * `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
-* `fundle upgrade`: Upgrades fundle to the latest version
+* `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
 * `fundle help`: Displays available commands
 
