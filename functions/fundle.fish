@@ -140,7 +140,7 @@ function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remot
 	git --git-dir=$git_dir fetch -q ^ /dev/null
 end
 
-function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_url
+function __fundle_install_plugin -d "install/update the given plugin" -a plugin -a git_url
 	if __fundle_no_git
 		return 1
 	end
@@ -148,15 +148,15 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	set -l plugin_dir (__fundle_plugins_dir)/$plugin
 	set -l git_dir $plugin_dir/.git
 	set -l remote_url (__fundle_remote_url $git_url)
-	set -l upgrade ""
+	set -l update ""
 
-	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
-		set upgrade true
+	if contains __update $argv
+		set update true
 	end
 
 	if test -d $plugin_dir
-		if test -n "$upgrade"
-			echo "Upgrading $plugin"
+		if test -n "$update"
+			echo "Updating $plugin"
 			__fundle_update_plugin $git_dir $remote_url
 		else
 			echo "$argv[1] installed in $plugin_dir"
@@ -171,7 +171,7 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	if test $status -eq 0
 		git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
 	else
-		echo "Could not upgrade $plugin"
+		echo "Could not update $plugin"
 		return 1
 	end
 end
@@ -255,6 +255,11 @@ function __fundle_install -d "install plugin"
 		__fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle install'"
 	end
 
+	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
+		echo "deprecation warning: please use 'fundle update' to update plugins"
+		set argv $argv __update
+	end
+
 	for i in (__fundle_seq (count $__fundle_plugin_names))
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
@@ -312,7 +317,7 @@ function __fundle_version -d "prints fundle version"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | list | install | self-update | version | help)"
+	echo "usage: fundle (init | plugin | list | install | update | self-update | version | help)"
 end
 
 function __fundle_list -d "list registered plugins"
@@ -354,6 +359,8 @@ function fundle -d "run fundle"
 			echo "'fundle plugins' has been replaced by 'fundle list'"
 		case "install"
 			__fundle_install $sub_args
+		case "update"
+			__fundle_install __update $sub_args
 		case "self-update"
 			__fundle_self_update
 		case "version" -v --version

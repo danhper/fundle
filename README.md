@@ -114,15 +114,16 @@ for fundle to download them.
 You can also use
 
 ```
-fundle install -u
+fundle update
 ```
 
-to upgrade the plugins.
+to update the plugins.
 
 ## Commands
 
 * `fundle init`: Initialize fundle, loading all the available plugins
-* `fundle install [-u]`: Install (or update) all plugins
+* `fundle install`: Install all plugins
+* `fundle update`: Update all plugins (deprecates: `fundle install -u`)
 * `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
