@@ -141,6 +141,7 @@ to update the plugins.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
 * `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle clean`: Cleans unused plugins
 * `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
 * `fundle help`: Displays available commands
@@ -240,12 +241,13 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2016-04-06 (v0.5.0): Add `fundle clean`. Deprecate `fundle install -u` and add `fundle update` thanks to @enricobacis.
 * 2015-12-22 (v0.4.0): Add `--path` option, thanks to @Perlence.
 * 2015-12-16 (v0.3.2): Fix profiling in OSX.
 * 2015-12-14 (v0.3.1): Fix incompatibility with oh-my-fish. Rename `plugins` to `list`.
 * 2015-12-14 (v0.3.0): Fix dependency load order. Add profiling mode.
 * 2015-12-14 (v0.2.2): Emit plugin initialization event
-* 2015-12-7  (v0.2.1): Use `curl` instead of `wget` for `self-update`
-* 2015-12-7  (v0.2.0): Add `self-update` command
-* 2015-12-7  (v0.1.0): Fix bug with dependency loading in `fundle init`
+* 2015-12-07 (v0.2.1): Use `curl` instead of `wget` for `self-update`
+* 2015-12-07 (v0.2.0): Add `self-update` command
+* 2015-12-07 (v0.1.0): Fix bug with dependency loading in `fundle init`
 * 2015-11-24: Allow the use of `#commit-ish` when using plugin repo. Checkout repository `commit-ish` instead of using master branch.

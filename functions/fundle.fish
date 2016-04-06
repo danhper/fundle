@@ -274,6 +274,19 @@ function __fundle_install -d "install plugin"
 	end
 end
 
+function __fundle_clean -d "cleans fundle directory"
+	set -l fundle_dir (__fundle_plugins_dir)
+	set -l used_plugins (__fundle_list -s)
+	set -l installed_plugins (find $fundle_dir -mindepth 2 -maxdepth 2 -type d)
+	for installed_plugin in $installed_plugins
+		set -l plugin (echo $installed_plugin | sed -e "s|$fundle_dir/||")
+		if not contains $plugin $used_plugins
+			echo "Removing $plugin"
+			rm -rf $fundle_dir/$plugin
+		end
+	end
+end
+
 function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
 	set -l plugin_path "."
@@ -361,6 +374,8 @@ function fundle -d "run fundle"
 			__fundle_install $sub_args
 		case "update"
 			__fundle_install __update $sub_args
+		case "clean"
+			__fundle_clean
 		case "self-update"
 			__fundle_self_update
 		case "version" -v --version
