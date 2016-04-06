@@ -14,9 +14,22 @@ you can use the [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my
 
 Just drop [fundle.fish](functions/fundle.fish) in your `~/.config/fish/functions` directory and you are done.
 
-```
+```sh
 mkdir -p ~/.config/fish/functions
-wget https://raw.githubusercontent.com/tuvistavie/fundle/master/functions/fundle.fish -O ~/.config/fish/functions/fundle.fish
+wget https://git.io/fundle -O ~/.config/fish/functions/fundle.fish
+```
+
+### Automatic install
+
+If you want to automatically install fundle when it is not present, you can add
+the following at the top of your `~/.config/fish/config.fish`.
+
+```fish
+if not functions -q fundle
+    echo "[Downloading fundle ...]"
+    mkdir -p ~/.config/fish/functions
+    curl -#fL https://git.io/fundle > ~/.config/fish/functions/fundle.fish; and fish -c "fundle install"; and exec fish
+end
 ```
 
 ### ArchLinux
