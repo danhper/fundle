@@ -28,7 +28,7 @@ the following at the top of your `~/.config/fish/config.fish`.
 if not functions -q fundle
     echo "[Downloading fundle ...]"
     mkdir -p ~/.config/fish/functions
-    curl -#fL https://git.io/fundle > ~/.config/fish/functions/fundle.fish; and fish -c "fundle install"; and exec fish
+    curl -#fL https://git.io/fundle > ~/.config/fish/functions/fundle.fish; and source ~/.config/fish/functions/fundle.fish
 end
 ```
 
