@@ -1,4 +1,4 @@
-set __fundle_current_version '0.5.0'
+set __fundle_current_version '0.5.1'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -330,7 +330,7 @@ function __fundle_version -d "prints fundle version"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | list | install | update | self-update | version | help)"
+	echo "usage: fundle (init | plugin | list | install | update | clean | self-update | version | help)"
 end
 
 function __fundle_list -d "list registered plugins"
