@@ -241,6 +241,7 @@ install packages, but I wanted the simplest tool possible, not a whole framework
 
 ## Changelog
 
+* 2016-04-06 (v0.5.1): Fix `fundle help` to show `clean` command.
 * 2016-04-06 (v0.5.0): Add `fundle clean`. Deprecate `fundle install -u` and add `fundle update` thanks to @enricobacis.
 * 2015-12-22 (v0.4.0): Add `--path` option, thanks to @Perlence.
 * 2015-12-16 (v0.3.2): Fix profiling in OSX.
