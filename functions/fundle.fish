@@ -1,4 +1,4 @@
-set __fundle_current_version '0.5.1'
+set __fundle_current_version '0.5.2'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -60,7 +60,7 @@ end
 
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
-	set -l latest (git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
+	set -l latest (command git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
 	if test (__fundle_compare_versions $latest (__fundle_version)) != "gt"
 		echo "fundle is already up to date"; and return 0
 	else
@@ -68,7 +68,7 @@ function __fundle_self_update -d "updates fundle"
 		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
 		set -l tmp_file (mktemp /tmp/fundle.XXX)
 		set -l update_message "fundle has been updated to version $latest"
-		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and source (status -f); and return 0
+		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and return 0
 	end
 end
 
@@ -86,7 +86,7 @@ function __fundle_remote_url -d "prints the remote url from the full git url" -a
 end
 
 function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
-	set -l sha (git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
+	set -l sha (command git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
 	if test $status -eq 0
 		echo -n $sha
 		return 0
@@ -136,8 +136,8 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 end
 
 function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remote_url
-	git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
-	git --git-dir=$git_dir fetch -q ^ /dev/null
+	command git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
+	command git --git-dir=$git_dir fetch -q ^ /dev/null
 end
 
 function __fundle_install_plugin -d "install/update the given plugin" -a plugin -a git_url
@@ -164,12 +164,12 @@ function __fundle_install_plugin -d "install/update the given plugin" -a plugin 
 		end
 	else
 		echo "Installing $plugin"
-		git clone -q $remote_url $plugin_dir
+		command git clone -q $remote_url $plugin_dir
 	end
 
 	set -l sha (__fundle_commit_sha $git_dir (__fundle_url_rev $git_url))
 	if test $status -eq 0
-		git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
+		command git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
 	else
 		echo "Could not update $plugin"
 		return 1
