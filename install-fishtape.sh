@@ -1,4 +1,4 @@
 #!/bin/sh
-
-mkdir -p ~/.config/fish/functions
-curl -L https://raw.githubusercontent.com/fisherman/fishtape/master/fishtape.fish > ~/.config/fish/functions/fishtape.fish
+[ -z "$XDG_CONFIG_HOME" ] && XDG_CONFIG_HOME="~/.config"
+mkdir -p $XDG_CONFIG_HOME/fish/functions
+curl -L https://raw.githubusercontent.com/fisherman/fishtape/master/fishtape.fish > $XDG_CONFIG_HOME/fish/functions/fishtape.fish
