@@ -106,7 +106,11 @@ end
 
 function __fundle_plugins_dir -d "returns fundle directory"
 	if test -z "$fundle_plugins_dir"
-		echo $HOME/.config/fish/fundle
+		if test -n "$XDG_CONFIG_HOME"
+			echo $XDG_CONFIG_HOME/fish/fundle
+		else
+			echo $HOME/.config/fish/fundle
+		end
 	else
 		echo $fundle_plugins_dir
 	end
