@@ -1,13 +1,13 @@
 source $DIRNAME/helper.fish
 
-function -S setup
+function setup
 	__fundle_common_setup
-	set plugin 'foo/with_init'
-	set repo $DIRNAME/fixtures/$plugin
+	set -g plugin 'foo/with_init'
+	set -g repo $path/fixtures/$plugin
 	__fundle_gitify $repo
 end
 
-function -S teardown
+function teardown
 	__fundle_clean_gitify $repo
 	__fundle_clean_tmp_dir
 end

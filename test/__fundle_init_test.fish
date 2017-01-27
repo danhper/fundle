@@ -1,16 +1,16 @@
 source $DIRNAME/helper.fish
 
-function -S setup
+function setup
 	__fundle_common_setup
-	cp -r $DIRNAME/fixtures/foo $DIRNAME/fundle/foo
+	cp -r $path/fixtures/foo $path/fundle/foo
 	__fundle_plugin 'foo/with_dependency' # this should recursively load 'foo/with_init'
 	__fundle_plugin 'foo/without_init'
 	__fundle_plugin 'foo/subfolder' --path 'plugin'
-	set output (__fundle_init)
-	set code $status
+	set -g output (__fundle_init)
+	set -g code $status
 end
 
-function -S teardown
+function teardown
 	__fundle_clean_tmp_dir
 end
 
@@ -43,13 +43,13 @@ test "$TESTNAME loads all .fish files when init.fish not present"
 end
 
 test "$TESTNAME adds functions directory to fish_function_path"
-	"$DIRNAME/fundle/foo/with_init/functions" \
-	"$DIRNAME/fundle/foo/subfolder/plugin/functions" = $fish_function_path
+	"$path/fundle/foo/with_init/functions" \
+	"$path/fundle/foo/subfolder/plugin/functions" = $fish_function_path
 end
 
 test "$TESTNAME adds completions directory to fish_complete_path"
-	"$DIRNAME/fundle/foo/with_init/completions" \
-	"$DIRNAME/fundle/foo/subfolder/plugin/completions" = $fish_complete_path
+	"$path/fundle/foo/with_init/completions" \
+	"$path/fundle/foo/subfolder/plugin/completions" = $fish_complete_path
 end
 
 test "$TESTNAME loads plugin functions"
