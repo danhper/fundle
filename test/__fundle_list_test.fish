@@ -1,6 +1,6 @@
 source $DIRNAME/helper.fish
 
-function -S setup
+function setup
 	__fundle_cleanup_plugins
 	__fundle_plugin 'foo/with_init' '/foo/bar'
 end
