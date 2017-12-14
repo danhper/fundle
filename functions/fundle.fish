@@ -21,7 +21,7 @@ function __fundle_next_arg -a index
 end
 
 function __fundle_compare_versions -a version1 -a version2
-	for i in (__fundle_seq 3)
+	for i in (__fundle_seq 4)
 		set -l v1 (echo $version1 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
 		set -l v2 (echo $version2 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
 		if test \( -n $v1 -a -z $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -lt $v2 \)
