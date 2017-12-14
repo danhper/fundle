@@ -1,4 +1,4 @@
-set __fundle_current_version '0.6.0'
+set __fundle_current_version '0.6.1'
 
 function __fundle_seq -a upto
 	seq 1 1 $upto ^ /dev/null
@@ -21,12 +21,12 @@ function __fundle_next_arg -a index
 end
 
 function __fundle_compare_versions -a version1 -a version2
-	for i in (__fundle_seq 4)
+	for i in (__fundle_seq 3)
 		set -l v1 (echo $version1 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
 		set -l v2 (echo $version2 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
-		if test $v1 -lt $v2 -o \( -n $v1 -a -z $v2 \)
+		if test \( -n $v1 -a -z $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -lt $v2 \)
 			echo -n "lt"; and return 0
-		else if test $v1 -gt $v2 -o \( -z $v1 -a -n $v2 \)
+		else if test \( -z $v1 -a -n $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -gt $v2 \)
 			echo -n "gt"; and return 0
 		end
 	end
