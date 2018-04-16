@@ -1,7 +1,7 @@
 set __fundle_current_version '0.6.1'
 
 function __fundle_seq -a upto
-	seq 1 1 $upto ^ /dev/null
+	seq 1 1 $upto 2>/dev/null
 end
 
 function __fundle_next_arg -a index
@@ -50,7 +50,7 @@ end
 
 function __fundle_date -d "returns a date"
 	set -l d (date +%s%N)
-	if echo $d | grep -v 'N' > /dev/null ^&1
+	if echo $d | grep -v 'N' > /dev/null 2>&1
 		echo $d
 	else
 		gdate +%s%N
@@ -86,7 +86,7 @@ function __fundle_remote_url -d "prints the remote url from the full git url" -a
 end
 
 function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
-	set -l sha (command git --git-dir $dir rev-parse -q --verify $commitish ^ /dev/null)
+	set -l sha (command git --git-dir $dir rev-parse -q --verify $commitish 2>/dev/null)
 	if test $status -eq 0
 		echo -n $sha
 		return 0
@@ -117,7 +117,7 @@ function __fundle_plugins_dir -d "returns fundle directory"
 end
 
 function __fundle_no_git -d "check if git is installed"
-	if not which git > /dev/null ^&1
+	if not which git > /dev/null 2>&1
 		echo "git needs to be installed and in the path"
 		return 0
 	end
@@ -125,10 +125,10 @@ function __fundle_no_git -d "check if git is installed"
 end
 
 function __fundle_check_date -d "check date"
-	if date +%s%N | grep -v 'N' > /dev/null ^&1
+	if date +%s%N | grep -v 'N' > /dev/null 2>&1
 		return 0
 	end
-	if which gdate > /dev/null ^&1
+	if which gdate > /dev/null 2>&1
 		return 0
 	end
 	echo "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX"
@@ -140,8 +140,8 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 end
 
 function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remote_url
-	command git --git-dir=$git_dir remote set-url origin $remote_url ^ /dev/null; and \
-	command git --git-dir=$git_dir fetch -q ^ /dev/null
+	command git --git-dir=$git_dir remote set-url origin $remote_url 2>/dev/null; and \
+	command git --git-dir=$git_dir fetch -q 2>/dev/null
 end
 
 function __fundle_install_plugin -d "install/update the given plugin" -a plugin -a git_url
