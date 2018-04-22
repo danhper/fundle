@@ -15,7 +15,7 @@ function teardown
 end
 
 test "$TESTNAME: fails when no plugin registered"
-	(__fundle_cleanup_plugins; and __fundle_init > /dev/null ^&1) 1 -eq $status
+	(__fundle_cleanup_plugins; and __fundle_init > /dev/null 2>&1) 1 -eq $status
 end
 
 test "$TESTNAME: does not fail when plugin not installed"
