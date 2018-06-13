@@ -66,7 +66,7 @@ After editing `config.fish`,
 
 1. Reload your shell (you can run `exec fish` for example)
 2. Run `fundle install`
-3. That's it!
+3. That's it! The plugins have been installed in `~/.config/fish/fundle`
 
 ### In depth
 
@@ -92,6 +92,13 @@ it will be passed directly to `git clone`:
 ```
 fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git'
 ```
+
+It also works with other repository managers:
+
+```
+fundle plugin 'username/reponame' --url 'git@gitlab.com:username/reponame.git'
+```
+
 
 You can also use a branch, tag or any [commit-ish](https://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html#_specifying_revisions) by appending `#commit-ish` to the URL. For example:
 
