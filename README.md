@@ -51,6 +51,9 @@ From fundle 0.2.0 and onwards, you can use `fundle self-update` to update fundle
 
 ### Sample `config.fish`
 
+
+Add this to your `~/.config/fish/config.fish`:
+
 ```
 fundle plugin 'edc/bass'
 fundle plugin 'oh-my-fish/plugin-php'
@@ -62,7 +65,7 @@ fundle init
 
 This will source the four plugins listed and load all the functions and completions found.
 
-After editing `config.fish`,
+After editing `config.fish`:
 
 1. Reload your shell (you can run `exec fish` for example)
 2. Run `fundle install`
@@ -70,13 +73,11 @@ After editing `config.fish`,
 
 ### In depth
 
-To add a plugin, you simply need to add
+To add a plugin, you simply need to open `~/.config/fish/config.fish` and add:
 
 ```
 fundle plugin 'repo_owner/repo_name'
 ```
-
-somewhere in your configuration.
 
 For example:
 
