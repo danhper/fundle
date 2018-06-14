@@ -51,6 +51,9 @@ From fundle 0.2.0 and onwards, you can use `fundle self-update` to update fundle
 
 ### Sample `config.fish`
 
+
+Add this to your `~/.config/fish/config.fish`:
+
 ```
 fundle plugin 'edc/bass'
 fundle plugin 'oh-my-fish/plugin-php'
@@ -62,21 +65,19 @@ fundle init
 
 This will source the four plugins listed and load all the functions and completions found.
 
-After editing `config.fish`,
+After editing `config.fish`:
 
 1. Reload your shell (you can run `exec fish` for example)
 2. Run `fundle install`
-3. That's it!
+3. That's it! The plugins have been installed in `~/.config/fish/fundle`
 
 ### In depth
 
-To add a plugin, you simply need to add
+To add a plugin, you simply need to open `~/.config/fish/config.fish` and add:
 
 ```
 fundle plugin 'repo_owner/repo_name'
 ```
-
-somewhere in your configuration.
 
 For example:
 
@@ -91,6 +92,18 @@ it will be passed directly to `git clone`:
 
 ```
 fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git'
+```
+
+It also works with other repository hosts:
+
+```
+fundle plugin 'username/reponame' --url 'git@gitlab.com:username/reponame.git'
+```
+
+And it works with https remote as well (in case you have "the authenticity of host github can't be established"):
+
+```
+fundle plugin 'username/reponame' --url 'https://gitlab.com/username/reponame.git'
 ```
 
 You can also use a branch, tag or any [commit-ish](https://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html#_specifying_revisions) by appending `#commit-ish` to the URL. For example:
