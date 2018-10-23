@@ -1,4 +1,4 @@
-# fundle [![Build Status](https://travis-ci.org/tuvistavie/fundle.svg?branch=master)](https://travis-ci.org/tuvistavie/fundle)
+# fundle [![Build Status](https://travis-ci.org/danhper/fundle.svg?branch=master)](https://travis-ci.org/danhper/fundle)
 
 A minimalist package manager for [fish](http://fishshell.com/) inspired by [Vundle](https://github.com/VundleVim/Vundle.vim).
 
@@ -8,7 +8,7 @@ git installed and on the path (and well, fish, obviously).
 
 This package manager is compatible with [oh-my-fish plugins](https://github.com/oh-my-fish).
 If you need the core functions of [oh-my-fish](https://github.com/oh-my-fish),
-you can use the [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my-fish-core) plugin.
+you can use the [danhper/oh-my-fish-core](https://github.com/danhper/oh-my-fish-core) plugin.
 
 ## Installation
 
@@ -57,8 +57,8 @@ Add this to your `~/.config/fish/config.fish`:
 ```
 fundle plugin 'edc/bass'
 fundle plugin 'oh-my-fish/plugin-php'
-fundle plugin 'tuvistavie/fish-fastdir'
-fundle plugin 'tuvistavie/fish-theme-afowler'
+fundle plugin 'danhper/fish-fastdir'
+fundle plugin 'danhper/fish-theme-afowler'
 
 fundle init
 ```
@@ -82,16 +82,16 @@ fundle plugin 'repo_owner/repo_name'
 For example:
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir'
+fundle plugin 'danhper/fish-fastdir'
 ```
 
-will install the repository at https://github.com/tuvistavie/fish-fastdir.
+will install the repository at https://github.com/danhper/fish-fastdir.
 
 If you need to change the repository, you can pass it with `--url` and
 it will be passed directly to `git clone`:
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git'
+fundle plugin 'danhper/fish-fastdir' --url 'git@github.com:danhper/fish-fastdir.git'
 ```
 
 It also works with other repository hosts:
@@ -109,7 +109,7 @@ fundle plugin 'username/reponame' --url 'https://gitlab.com/username/reponame.gi
 You can also use a branch, tag or any [commit-ish](https://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html#_specifying_revisions) by appending `#commit-ish` to the URL. For example:
 
 ```
-fundle plugin 'tuvistavie/fish-fastdir' --url 'git@github.com:tuvistavie/fish-fastdir.git#my-branch'
+fundle plugin 'danhper/fish-fastdir' --url 'git@github.com:danhper/fish-fastdir.git#my-branch'
 ```
 
 will use `my-branch`. If no commit-ish is passed, it will default to `master`.
@@ -163,7 +163,7 @@ to update the plugins.
 * `fundle help`: Displays available commands
 
 Completions are available in the [completions/fundle.fish](./completions/fundle.fish).
-Note that you will need to install [fish-completion-helpers](https://github.com/tuvistavie/fish-completion-helpers)
+Note that you will need to install [fish-completion-helpers](https://github.com/danhper/fish-completion-helpers)
 to use them.
 
 ## Plugin structure
@@ -205,7 +205,7 @@ fundle plugin 'my/dependency'
 in your plugin `init.fish` and fundle will automatically fetch and install the
 missing dependencies when installing the plugin.
 
-I created a minimal example in [fish-nvm](https://github.com/tuvistavie/fish-nvm),
+I created a minimal example in [fish-nvm](https://github.com/danhper/fish-nvm),
 which depends on [edc/bass](https://github.com/edc/bass).
 
 ## Profiling
@@ -238,9 +238,9 @@ parent plugin load time.
 ## Compatible plugins
 
 Most [oh-my-fish plugins](https://github.com/oh-my-fish) should work out of the box
-or with [tuvistavie/oh-my-fish-core](https://github.com/tuvistavie/oh-my-fish-core) installed.
+or with [danhper/oh-my-fish-core](https://github.com/danhper/oh-my-fish-core) installed.
 
-Please feel free to edit the [wiki](https://github.com/tuvistavie/fundle/wiki) and add
+Please feel free to edit the [wiki](https://github.com/danhper/fundle/wiki) and add
 your plugins, or plugins you know work with fundle.
 
 ## Contributing
@@ -248,7 +248,7 @@ your plugins, or plugins you know work with fundle.
 Contributions are very appreciated. Please open an issue or create a PR if you
 want to contribute.
 
-If you created a package compatible with fundle, feel free to [add it to the Wiki](https://github.com/tuvistavie/fundle/wiki/Home/_edit).
+If you created a package compatible with fundle, feel free to [add it to the Wiki](https://github.com/danhper/fundle/wiki/Home/_edit).
 
 ## Motivations
 
