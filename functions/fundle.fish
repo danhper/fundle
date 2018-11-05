@@ -193,14 +193,15 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 		return 0
 	end
 
-	set -l plugin_dir (echo "$fundle_dir/$plugin/$path" | sed -e 's|/.$||')
+	set -l plugin_dir (string replace -r '/.$' '' -- "$fundle_dir/$plugin/$path")
 
 	if not test -d $plugin_dir
 		__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
 		return 0
 	end
 
-	set -l plugin_name (echo $plugin | awk -F/ '{print $NF}' | sed -e s/plugin-//)
+    # Take everything but "plugin-" from the last path component
+    set -l plugin_name (string replace -r '.*/(plugin-)?(.*)$' '$2' -- $plugin)
 	set -l init_file "$plugin_dir/init.fish"
 	set -l conf_dir "$plugin_dir/conf.d"
 	set -l bindings_file  "$plugin_dir/key_bindings.fish"
@@ -238,7 +239,7 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	set -l dependencies (echo -s \n$plugin_paths \n$__fundle_plugin_name_paths | sed -e '/^$/d' | sort | uniq -u)
 	for dependency in $dependencies
-		echo $dependency | sed -e 's/:/ /' | read -l -a name_path
+        set -l name_path (string split : -- $dependency)
 		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	end
 
