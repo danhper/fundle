@@ -61,12 +61,13 @@ end
 
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
+    # This `sed` stays for now since doing it easily with `string` requires "--filter", which is only in 2.6.0
 	set -l latest (command git ls-remote --tags $fundle_repo_url | sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | tail -n 1)
 	if test (__fundle_compare_versions $latest (__fundle_version)) != "gt"
 		echo "fundle is already up to date"; and return 0
 	else
 		set -l file_url_template 'https://raw.githubusercontent.com/tuvistavie/fundle/VERSION/functions/fundle.fish'
-		set -l file_url (echo $file_url_template | sed -e "s/VERSION/v$latest/")
+		set -l file_url (string replace 'VERSION' -- "v$latest" $file_url_template)
 		set -l tmp_file (mktemp /tmp/fundle.XXX)
 		set -l update_message "fundle has been updated to version $latest"
 		curl -Ls $file_url > $tmp_file; and mv $tmp_file (status -f); and echo $update_message; and return 0
@@ -278,7 +279,7 @@ Try reloading your shell if you just edited your configuration."
 	end
 
 	for name_path in $__fundle_plugin_name_paths
-		echo $name_path | sed -e 's/:/ /' | read -l -a name_path
+        set -l name_path (string split : -- $name_path)
 		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	end
 
@@ -314,7 +315,7 @@ function __fundle_clean -d "cleans fundle directory"
 	set -l used_plugins (__fundle_list -s)
     set -l installed_plugins $fundle_dir/*/*/
 	for installed_plugin in $installed_plugins
-		set -l plugin (echo $installed_plugin | sed -e "s|$fundle_dir/||")
+        set -l plugin (string replace -r -- "$fundle_dir" "" $installed_plugin)
 		if not contains $plugin $used_plugins
 			echo "Removing $plugin"
 			rm -rf $fundle_dir/$plugin
