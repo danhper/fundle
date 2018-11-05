@@ -34,21 +34,6 @@ function __fundle_compare_versions -a version1 -a version2
 	echo -n "eq"; and return 0
 end
 
-function __fundle_profile -d "runs a function in profile mode"
-	set -l start_time (__fundle_date +%s%N)
-	eval $argv
-	set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
-	echo "$argv": {$ellapsed_time}us
-end
-
-function __fundle_profile_or_run -a profile
-	if test $profile -eq 1
-		__fundle_profile $argv[2..-1]
-	else
-		eval $argv[2..-1]
-	end
-end
-
 function __fundle_date -d "returns a date"
 	set -l d (date +%s%N)
 	if echo $d | string match -rvq 'N'
@@ -242,7 +227,14 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 	set -l dependencies (printf '%s\n' $plugin_paths $__fundle_plugin_name_paths | sort | uniq -u)
 	for dependency in $dependencies
         set -l name_path (string split : -- $dependency)
-		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+        if test "$profile" -eq 1
+	        set -l start_time (__fundle_date +%s%N)
+		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+	        set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
+	        echo "$argv": {$ellapsed_time}us
+        else
+		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+        end
 	end
 
 	emit "init_$plugin_name" $plugin_dir
@@ -280,7 +272,14 @@ Try reloading your shell if you just edited your configuration."
 
 	for name_path in $__fundle_plugin_name_paths
         set -l name_path (string split : -- $name_path)
-		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+        if test "$profile" -eq 1
+	        set -l start_time (__fundle_date +%s%N)
+		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+	        set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
+	        echo "$argv": {$ellapsed_time}us
+        else
+		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+        end
 	end
 
 	__fundle_bind
