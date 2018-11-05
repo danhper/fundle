@@ -221,12 +221,12 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 		source $init_file
 	else if test -d $conf_dir
 		# read all *.fish files in conf.d
-		for f in (find $conf_dir -maxdepth 1 -iname "*.fish")
+		for f in $conf_dir/*.fish
 			source $f
 		end
 	else
 		# read all *.fish files if no init.fish or conf.d found
-		for f in (find $plugin_dir -maxdepth 1 -iname "*.fish")
+		for f in $plugin_dir/*.fish
 			source $f
 		end
 	end
@@ -311,7 +311,7 @@ end
 function __fundle_clean -d "cleans fundle directory"
 	set -l fundle_dir (__fundle_plugins_dir)
 	set -l used_plugins (__fundle_list -s)
-	set -l installed_plugins (find $fundle_dir -mindepth 2 -maxdepth 2 -type d)
+    set -l installed_plugins $fundle_dir/*/*/
 	for installed_plugin in $installed_plugins
 		set -l plugin (echo $installed_plugin | sed -e "s|$fundle_dir/||")
 		if not contains $plugin $used_plugins
