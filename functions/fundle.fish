@@ -117,7 +117,8 @@ function __fundle_plugins_dir -d "returns fundle directory"
 end
 
 function __fundle_no_git -d "check if git is installed"
-	if not which git > /dev/null 2>&1
+    # `command -q` is >= 2.5.0
+	if not command -s git > /dev/null 2>&1
 		echo "git needs to be installed and in the path"
 		return 0
 	end
@@ -128,7 +129,7 @@ function __fundle_check_date -d "check date"
 	if date +%s%N | grep -v 'N' > /dev/null 2>&1
 		return 0
 	end
-	if which gdate > /dev/null 2>&1
+	if command -s gdate > /dev/null 2>&1
 		return 0
 	end
 	echo "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX"
