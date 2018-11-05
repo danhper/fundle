@@ -21,16 +21,15 @@ function __fundle_next_arg -a index
 end
 
 function __fundle_compare_versions -a version1 -a version2
-    set -l v1 (string split . -- $version1 | string replace -ra '[a-z]+' '')
-    set -l v2 (string split . -- $version2 | string replace -ra '[a-z]+' '')
-    for i in 1 2 3 4
-        if test \( -n "$v1[$i]" -a -z "$v2[$i]" \) -o \( -n "$v1[$i]" -a -n "$v2[$i]" -a "$v1[$i]" -gt "$v2[$i]" \)
-            echo -n lt; and return 0
-		else if test \( -z "$v1[$i]" -a -n "$v2[$i]" \) -o \( -n "$v1[$i]" -a -n "$v2[$i]" -a "$v1[$i]" -gt "$v2[$i]" \)
+	for i in (__fundle_seq 4)
+		set -l v1 (echo $version1 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
+		set -l v2 (echo $version2 | cut -d '.' -f $i | sed -Ee 's/[a-z]+//g')
+		if test \( -n $v1 -a -z $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -lt $v2 \)
+			echo -n "lt"; and return 0
+		else if test \( -z $v1 -a -n $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -gt $v2 \)
 			echo -n "gt"; and return 0
 		end
-    end
-
+	end
 	echo -n "eq"; and return 0
 end
 
