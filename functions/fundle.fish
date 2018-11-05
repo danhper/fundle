@@ -239,7 +239,7 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	set -g __fundle_loaded_plugins $plugin $__fundle_loaded_plugins
 
-	set -l dependencies (echo -s \n$plugin_paths \n$__fundle_plugin_name_paths | sed -e '/^$/d' | sort | uniq -u)
+	set -l dependencies (printf '%s\n' $plugin_paths $__fundle_plugin_name_paths | sort | uniq -u)
 	for dependency in $dependencies
         set -l name_path (string split : -- $dependency)
 		__fundle_profile_or_run $profile __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
