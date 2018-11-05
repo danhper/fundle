@@ -50,7 +50,7 @@ end
 
 function __fundle_date -d "returns a date"
 	set -l d (date +%s%N)
-	if echo $d | grep -v 'N' > /dev/null 2>&1
+	if echo $d | string match -rvq 'N'
 		echo $d
 	else
 		gdate +%s%N
@@ -126,7 +126,7 @@ function __fundle_no_git -d "check if git is installed"
 end
 
 function __fundle_check_date -d "check date"
-	if date +%s%N | grep -v 'N' > /dev/null 2>&1
+	if date +%s%N | string match -rvq 'N'
 		return 0
 	end
 	if command -s gdate > /dev/null 2>&1
