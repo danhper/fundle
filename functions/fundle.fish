@@ -311,9 +311,10 @@ end
 function __fundle_clean -d "cleans fundle directory"
 	set -l fundle_dir (__fundle_plugins_dir)
 	set -l used_plugins (__fundle_list -s)
-    set -l installed_plugins $fundle_dir/*/*/
+	set -l installed_plugins $fundle_dir/*/*/
 	for installed_plugin in $installed_plugins
-        set -l plugin (string replace -r -- "$fundle_dir" "" $installed_plugin)
+		set -l plugin (string trim --chars="/" \
+									(string replace -r -- "$fundle_dir" "" $installed_plugin))
 		if not contains $plugin $used_plugins
 			echo "Removing $plugin"
 			rm -rf $fundle_dir/$plugin
