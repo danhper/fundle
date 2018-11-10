@@ -230,7 +230,7 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 	        set -l start_time (__fundle_date +%s%N)
 		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	        set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
-	        echo "$argv": {$ellapsed_time}us
+	        echo "$name_path[1]": {$ellapsed_time}us
         else
 		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
         end
@@ -275,7 +275,7 @@ Try reloading your shell if you just edited your configuration."
 	        set -l start_time (__fundle_date +%s%N)
 		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
 	        set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
-	        echo "$argv": {$ellapsed_time}us
+	        echo "$name_path[1]": {$ellapsed_time}us
         else
 		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
         end
