@@ -211,10 +211,12 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 			source $f
 		end
 	else
-		# read all *.fish files if no init.fish or conf.d found
-		for f in $plugin_dir/*.fish
-			source $f
-		end
+	    # For compatibility with oh-my-fish themes, if there is no `init.fish` file in the plugin,
+	    # which is the case with themses, the root directory of the plugin is trerated as a functions
+	    # folder, so we include it in the `fish_function_path` variable.
+	    if not contains $plugin_dir $fish_function_path
+		    set fish_function_path $fish_function_path[1] $plugin_dir $fish_function_path[2..-1]
+	    end
 	end
 
 	if test -f $bindings_file
