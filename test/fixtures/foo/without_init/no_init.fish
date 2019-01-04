@@ -1,1 +1,3 @@
-set -g i_do_have_init_file 'not empty'
+function no_init
+    echo "not_empty"
+end

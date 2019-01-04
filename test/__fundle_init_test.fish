@@ -38,8 +38,8 @@ test "$TESTNAME: does not load other .fish files when init.fish present"
 	-z "$i_should_be_empty"
 end
 
-test "$TESTNAME loads all .fish files when init.fish not present"
-	-n "$i_do_have_init_file"
+test "$TESTNAME treats package as function folder when init.fish not present"
+	-n (no_init)
 end
 
 test "$TESTNAME adds functions directory to fish_function_path"
