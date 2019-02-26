@@ -159,13 +159,12 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 end
 
 function __fundle_update -d "update the given plugin, or all if unspecified" -a plugin
-  if set -q plugin
-    if test ! -d (__fundle_plugins_dir)/$plugin/.git;
-      echo "$plugin not installed. You may need to run 'fundle install'"
-      set -e plugin
-    end
+  if test -n "$plugin"
+    test ! -d (__fundle_plugins_dir)/$plugin/.git;
+      and echo "$plugin not installed. You may need to run 'fundle install'";
+      and set -e plugin
   end
-  if set -q plugin
+  if test -n "$plugin"
     echo "Updating $plugin"
     set -l git_dir (__fundle_plugins_dir)/$plugin/.git
     __fundle_update_plugin $git_dir (__fundle_remote_url $git_url)
