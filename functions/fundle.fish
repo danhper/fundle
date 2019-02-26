@@ -131,7 +131,7 @@ function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remot
 	command git --git-dir=$git_dir fetch -q 2>/dev/null
 end
 
-function __fundle_install_plugin -d "install/update the given plugin" -a plugin -a git_url
+function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_url
 	if __fundle_no_git
 		return 1
 	end
@@ -141,18 +141,9 @@ function __fundle_install_plugin -d "install/update the given plugin" -a plugin 
 	set -l remote_url (__fundle_remote_url $git_url)
 	set -l update ""
 
-	if contains __update $argv
-		set update true
-	end
-
 	if test -d $plugin_dir
-		if test -n "$update"
-			echo "Updating $plugin"
-			__fundle_update_plugin $git_dir $remote_url
-		else
-			echo "$argv[1] installed in $plugin_dir"
-			return 0
-		end
+    echo "$argv[1] installed in $plugin_dir"
+    return 0
 	else
 		echo "Installing $plugin"
 		command git clone -q $remote_url $plugin_dir
@@ -165,6 +156,24 @@ function __fundle_install_plugin -d "install/update the given plugin" -a plugin 
 		echo "Could not update $plugin"
 		return 1
 	end
+end
+
+function __fundle_update -d "update the given plugin, or all if unspecified" -a plugin
+  if set -q plugin
+    if test ! -d (__fundle_plugins_dir)/$plugin/.git;
+      echo "$plugin not installed. You may need to run 'fundle install'"
+      set -e plugin
+    end
+  end
+  if set -q plugin
+    echo "Updating $plugin"
+    set -l git_dir (__fundle_plugins_dir)/$plugin/.git
+    __fundle_update_plugin $git_dir (__fundle_remote_url $git_url)
+  else
+    for i in $__fundle_plugin_names
+      __fundle_update $i
+    end
+  end
 end
 
 function __fundle_show_doc_msg -d "show a link to fundle docs"
@@ -289,11 +298,6 @@ function __fundle_install -d "install plugin"
 		__fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle install'"
 	end
 
-	if begin; contains -- -u $argv; or contains -- --upgrade $argv; end
-		echo "deprecation warning: please use 'fundle update' to update plugins"
-		set argv $argv __update
-	end
-
 	for i in (__fundle_seq (count $__fundle_plugin_names))
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
@@ -408,7 +412,7 @@ function fundle -d "run fundle"
 		case "install"
 			__fundle_install $sub_args
 		case "update"
-			__fundle_install __update $sub_args
+			__fundle_update $sub_args
 		case "clean"
 			__fundle_clean
 		case "self-update"
