@@ -126,9 +126,41 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 	echo "https://github.com/$repo.git"
 end
 
-function __fundle_update_plugin -d "update the given plugin" -a git_dir -a remote_url
-	command git --git-dir=$git_dir remote set-url origin $remote_url 2>/dev/null; and \
+
+function __fundle_plugin_index -d "returns the index of the plugin" -a plugin
+	for i in (__fundle_seq (count $__fundle_plugin_names))
+		if test "$__fundle_plugin_names[$i]" = "$plugin"
+			return $i
+		end
+	end
+	# NOTE: should never reach this point
+	echo "could not find plugin: $plugin"
+	exit 1
+end
+
+function __fundle_checkout_revision -a plugin -a git_url
+	set -l plugin_dir (__fundle_plugins_dir)/$plugin
+	set -l git_dir $plugin_dir/.git
+
+	set -l sha (__fundle_commit_sha $git_dir (__fundle_url_rev $git_url))
+	if test $status -eq 0
+		command git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
+	else
+		echo "Could not checkout $plugin revision $sha"
+		return 1
+	end
+end
+
+function __fundle_update_plugin -d "update the given plugin" -a plugin -a git_url
+	echo "Updating $plugin"
+
+	set -l remote_url (__fundle_remote_url $git_url)
+	set -l git_dir (__fundle_plugins_dir)/$plugin/.git
+
+	command git --git-dir=$git_dir remote set-url origin $remote_url 2>/dev/null
 	command git --git-dir=$git_dir fetch -q 2>/dev/null
+
+	__fundle_checkout_revision $plugin $git_url
 end
 
 function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_url
@@ -139,7 +171,6 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	set -l plugin_dir (__fundle_plugins_dir)/$plugin
 	set -l git_dir $plugin_dir/.git
 	set -l remote_url (__fundle_remote_url $git_url)
-	set -l update ""
 
 	if test -d $plugin_dir
     echo "$argv[1] installed in $plugin_dir"
@@ -147,32 +178,24 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	else
 		echo "Installing $plugin"
 		command git clone -q $remote_url $plugin_dir
-	end
-
-	set -l sha (__fundle_commit_sha $git_dir (__fundle_url_rev $git_url))
-	if test $status -eq 0
-		command git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
-	else
-		echo "Could not update $plugin"
-		return 1
+		__fundle_checkout_revision $plugin $git_url
 	end
 end
 
 function __fundle_update -d "update the given plugin, or all if unspecified" -a plugin
-  if test -n "$plugin"
-    test ! -d (__fundle_plugins_dir)/$plugin/.git;
-      and echo "$plugin not installed. You may need to run 'fundle install'";
-      and set -e plugin
-  end
-  if test -n "$plugin"
-    echo "Updating $plugin"
-    set -l git_dir (__fundle_plugins_dir)/$plugin/.git
-    __fundle_update_plugin $git_dir (__fundle_remote_url $git_url)
-  else
-    for i in $__fundle_plugin_names
-      __fundle_update $i
-    end
-  end
+	if test -n "$plugin"; and test ! -d (__fundle_plugins_dir)/$plugin/.git
+		echo "$plugin not installed. You may need to run 'fundle install'"
+		return 1
+	end
+
+	if test -n "$plugin"
+		set -l index (__fundle_plugin_index $plugin)
+		__fundle_update_plugin "$plugin" $__fundle_plugin_urls[$index]
+	else
+		for i in (__fundle_seq (count $__fundle_plugin_names))
+			__fundle_update_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i]
+		end
+	end
 end
 
 function __fundle_show_doc_msg -d "show a link to fundle docs"
