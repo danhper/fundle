@@ -191,9 +191,9 @@ A plugin basically has the following structure.
 * `completions` is the directory containing the plugin completions. This directory will
   be added to `fish_complete_path`.
 
-NOTE: if no `init.fish` file is found, all the files with a `.fish` extensions in the
-top directory of the plugin will be loaded. This is to make the plugins compatible with
-[oh-my-fish plugins](https://github.com/oh-my-fish).
+NOTE: if no `init.fish` file is found, the root folder of the plugin is treated
+as a functions directory. This is to make the plugins compatible with
+[oh-my-fish plugins](https://github.com/oh-my-fish) themes.
 
 ## Managing dependencies
 

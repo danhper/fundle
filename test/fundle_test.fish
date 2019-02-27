@@ -17,5 +17,5 @@ test "$TESTNAME init: loads registered plugin"
 		and cp -r $path/fixtures/foo/without_init $path/fundle/foo/without_init;
 		and fundle plugin 'foo/without_init';
 		and fundle init;
-		and echo "$i_do_have_init_file")
+		and no_init)
 end
