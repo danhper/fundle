@@ -52,7 +52,7 @@ From fundle 0.2.0 and onwards, you can use `fundle self-update` to update fundle
 ### Sample `config.fish`
 
 
-Add this to your `~/.config/fish/config.fish`:
+Add this to your `~/.config/fish/config.fish` or any file that you use to load fundle's plugins (in `/etc/fish` for example):
 
 ```
 fundle plugin 'edc/bass'
@@ -64,6 +64,8 @@ fundle init
 ```
 
 This will source the four plugins listed and load all the functions and completions found.
+
+*Note that the `fundle init` is required on each file loading a plugin, so if you load plugins in multiple .fish files, you have to add `fundle init` to each one of them.*
 
 After editing `config.fish`:
 
