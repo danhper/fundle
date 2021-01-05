@@ -1,10 +1,10 @@
-source $DIRNAME/helper.fish
-source $DIRNAME/with_repo.fish
+source $current_dirname/helper.fish
+source $current_dirname/with_repo.fish
 
-test "$TESTNAME: works with valid git repositories"
-	(__fundle_commit_sha $repo master > /dev/null) 0 -eq $status
-end
+@test "$TESTNAME: works with valid git repositories" (
+	__fundle_commit_sha $repo main > /dev/null
+) 0 -eq $status
 
-test "$TESTNAME: returns a valid sha"
-	40 -eq (__fundle_commit_sha $repo master | wc -m)
-end
+@test "$TESTNAME: returns a valid sha" (
+	__fundle_commit_sha $repo main | wc -m
+) -eq 40

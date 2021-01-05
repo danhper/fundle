@@ -1,10 +1,10 @@
-source $DIRNAME/helper.fish
+source $current_dirname/helper.fish
 
 function setup
 	__fundle_common_setup
-	mkdir -p $path/fundle/foo
-	cp -r $path/fixtures/foo/with_init $path/fundle/foo/with_init
-	cp -r $path/fixtures/foo/without_init $path/fundle/foo/without_init
+	mkdir -p $current_dirname/fundle/foo
+	cp -r $current_dirname/fixtures/foo/with_init $current_dirname/fundle/foo/with_init
+	cp -r $current_dirname/fixtures/foo/without_init $current_dirname/fundle/foo/without_init
 	__fundle_plugin 'foo/with_init'
 	__fundle_init
     set -g output (__fundle_clean)
@@ -15,14 +15,8 @@ function teardown
 	__fundle_clean_tmp_dir
 end
 
-test "$TESTNAME: exits with status 0"
-    0 -eq $code
-end
+@test "$TESTNAME: exits with status 0" 0 -eq $code
 
-test "$TESTNAME: outputs info about removed plugins"
-    'Removing foo/without_init' = $output
-end
+@test "$TESTNAME: outputs info about removed plugins" 'Removing foo/without_init' = $output
 
-test "$TESTNAME: removes unused plugins"
-    'without_init' != (ls $path/fundle/foo)
-end
+@test "$TESTNAME: removes unused plugins" 'without_init' != (ls $current_dirname/fundle/foo)
