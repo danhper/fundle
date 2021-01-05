@@ -63,7 +63,7 @@ function __fundle_url_rev -d "prints the revision from the url" -a git_url
 	if test -n "$rev"
 		echo $rev
 	else
-		echo master
+		echo HEAD
 	end
 end
 
