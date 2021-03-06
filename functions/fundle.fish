@@ -123,7 +123,13 @@ function __fundle_check_date -d "check date"
 end
 
 function __fundle_get_url -d "returns the url for the given plugin" -a repo
-	echo "https://github.com/$repo.git"
+    set split (string split @ $repo)
+    set repo $split[1]
+    set tag  $split[2]
+    set url "https://github.com/$repo.git"
+
+    test ! -z "$tag"; and set url (string join "#tags/" "$url" "$tag")
+    echo "$url"
 end
 
 
@@ -380,6 +386,7 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 		end
 	end
 	test -z "$plugin_url"; and set plugin_url (__fundle_get_url $name)
+    set name (string split @ $name)[1]
 
 	if not contains $name $__fundle_plugin_names
 		set -g __fundle_plugin_names $__fundle_plugin_names $name
