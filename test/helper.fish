@@ -1,7 +1,14 @@
 if test -z "$current_dirname"
-	set current_dirname (cd (dirname (status -f)); and pwd)
+	set current_dirname (dirname (realpath (status -f)))
 end
-source $current_dirname/../functions/fundle.fish
+source "$current_dirname/../functions/fundle.fish"
+
+set TESTNAME (
+    basename -s '.fish' (
+        status -t                                       \
+        | string match -r '\w+.fish'                    \
+        | string match -v -r '(helper|with_repo)\.fish')[1]
+)
 
 function __fundle_common_setup
 	__fundle_cleanup_plugins
