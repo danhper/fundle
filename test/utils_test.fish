@@ -1,4 +1,4 @@
-source $current_dirname/helper.fish
+source (string join '/' (dirname (realpath (status -f))) "helper.fish")
 if test -z "$XDG_CONFIG_HOME"
 	set XDG_CONFIG_HOME $HOME/.config
 end
@@ -7,6 +7,8 @@ function setup
 	set -g remote 'https://github.com/tuvistavie/fundle.git'
 	set -g revision "foobar"
 end
+
+setup
 
 @test "__fundle_plugins_dir: returns a default value when fundle_plugins_dir is not set" (
 	set -e fundle_plugins_dir; __fundle_plugins_dir
