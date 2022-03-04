@@ -89,12 +89,19 @@ fundle plugin 'danhper/fish-fastdir'
 
 will install the repository at https://github.com/danhper/fish-fastdir.
 
+To pick a specific version of the plugins, you can append @ followed by a tag from the repo:
+```
+fundle plugin 'joseluisq/gitnow@2.7.0'
+```
+will install Gitnow release 2.7.0 at https://github.com/joseluisq/gitnow/releases/tag/2.7.0.
+
 If you need to change the repository, you can pass it with `--url` and
 it will be passed directly to `git clone`:
 
 ```
 fundle plugin 'danhper/fish-fastdir' --url 'git@github.com:danhper/fish-fastdir.git'
 ```
+Keep in mind that this option overrides any tag set with '@'.
 
 It also works with other repository hosts:
 
