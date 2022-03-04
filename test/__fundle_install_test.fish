@@ -1,4 +1,4 @@
-source $current_dirname/helper.fish
+source (string join '/' (dirname (realpath (status -f))) "helper.fish")
 
 function setup
 	__fundle_common_setup
@@ -9,11 +9,13 @@ function setup
 	set -g code $status
 end
 
-function teardown
+function teardown --on-process-exit %self
 	__fundle_clean_tmp_dir
 	__fundle_clean_gitify $current_dirname/fixtures/foo/with_dependency
 	__fundle_clean_gitify $current_dirname/fixtures/foo/with_init
 end
+
+setup
 
 @test "$TESTNAME: succeeds when all plugins exist" (
 	__fundle_cleanup_plugins;

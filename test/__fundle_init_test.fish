@@ -1,4 +1,4 @@
-source $current_dirname/helper.fish
+source (string join '/' (dirname (realpath (status -f))) "helper.fish")
 
 function setup
 	__fundle_common_setup
@@ -10,9 +10,11 @@ function setup
 	set -g code $status
 end
 
-function teardown
+function teardown --on-process-exit %self
 	__fundle_clean_tmp_dir
 end
+
+setup
 
 @test "$TESTNAME: fails when no plugin registered" (
 	__fundle_cleanup_plugins; and __fundle_init > /dev/null 2>&1
@@ -21,7 +23,7 @@ end
 @test "$TESTNAME: does not fail when plugin not installed" 0 -eq $code
 
 @test "$TESTNAME: outputs a warning when plugin not installed" -n (
-	__fundle_plugin 'foo/i_dont_exit'; __fundle_init
+	__fundle_plugin 'foo/i_dont_exit' > /dev/null 2>&1; __fundle_init | string collect
 )
 
 @test "$TESTNAME: does not output anything when all plugin are present" -z "$output"

@@ -1,4 +1,4 @@
-source $current_dirname/helper.fish
+source (string join '/' (dirname (realpath (status -f))) "helper.fish")
 source $current_dirname/with_repo.fish
 
 @test "$TESTNAME: fails when plugin cannot be fetched" (

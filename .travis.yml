@@ -1,26 +1,33 @@
-language: c
+language: shell
 
-sudo: true
+git:
+  depth: 1
 
-os:
-  - linux
-  - osx
+os: linux
+
+dist: focal
 
 env:
   - FISH_PPA=nightly-master
-  - FISH_PPA=release-2
-  
-matrix:
-  exclude:
+  - FISH_PPA=release-3
+
+jobs:
+  include:
     - os: osx
-      env: FISH_PPA=nightly-master
+      osx_image: xcode12.2
+      before_install:
+        - brew update
+        - brew install fish
 
 before_install:
-  - ./prepare-ci.sh
-  - fish --version
+  - sudo add-apt-repository -y "ppa:fish-shell/$FISH_PPA"
+  - sudo apt-get update
+  - sudo apt-get -y install fish
 
 before_script:
   - git config --global user.email "tuvistavie+fundle@gmail.com"
   - git config --global user.name "Fundle"
+  - fish --version
+  - ./install-fishtape.sh
 
-script: make test
+script: fish ./run-tests.fish

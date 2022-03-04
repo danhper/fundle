@@ -1,4 +1,4 @@
-source $current_dirname/helper.fish
+source (string join '/' (dirname (realpath (status -f))) "helper.fish")
 
 function setup
 	__fundle_common_setup
@@ -11,9 +11,11 @@ function setup
 	set -g code $status
 end
 
-function teardown
+function teardown --on-process-exit %self
 	__fundle_clean_tmp_dir
 end
+
+setup
 
 @test "$TESTNAME: exits with status 0" 0 -eq $code
 
