@@ -220,7 +220,7 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	if not test -d $plugin_dir
 		__fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'"
-		return 0
+		return 1
 	end
 
     # Take everything but "plugin-" from the last path component
@@ -308,6 +308,7 @@ Try reloading your shell if you just edited your configuration."
 		set profile 1
 	end
 
+    set -l has_uninstalled_plugins 0
 	for name_path in $__fundle_plugin_name_paths
         set -l name_path (string split : -- $name_path)
         if test "$profile" -eq 1
@@ -316,11 +317,12 @@ Try reloading your shell if you just edited your configuration."
 	        set -l ellapsed_time (math \((__fundle_date +%s%N) - $start_time\) / 1000)
 	        echo "$name_path[1]": {$ellapsed_time}us
         else
-		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile
+		    __fundle_load_plugin $name_path[1] $name_path[2] $fundle_dir $profile || set has_uninstalled_plugins 1
         end
 	end
 
 	__fundle_bind
+    return $has_uninstalled_plugins
 end
 
 function __fundle_install -d "install plugin"
