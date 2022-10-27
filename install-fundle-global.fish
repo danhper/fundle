@@ -1,6 +1,7 @@
 builtin echo "[Downloading fundle ...]";
 command mkdir -p /root/.config/fish/functions /root/.config/fish/completions
-command sudo echo "builtin source /root/.config/fish/functions/fundle.fish" >> /root/.config/fish/config.fish
+command grep fundle.fish /root/.config/fish/config.fish;
+  or command sudo echo "builtin source /root/.config/fish/functions/fundle.fish" >> /root/.config/fish/config.fish
 for i in functions completions
   command mkdir -p /root/.config/fish/$i
   command sudo curl -sfL https://raw.githubusercontent.com/tuvistavie/fundle/master/$i/fundle.fish > /root/.config/fish/$i/fundle.fish;
