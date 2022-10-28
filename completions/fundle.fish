@@ -3,7 +3,7 @@ complete -f -c fundle -n '__fish_prog_needs_command' -a global-plugin -d "add a 
 complete -f -c fundle -n '__fish_prog_needs_command' -a plugin -d "add a plugin"
 complete -f -c fundle -n '__fish_prog_needs_command' -a list -d "list plugins"
 complete -f -c fundle -n '__fish_prog_needs_command' -a install -d "install all plugins"
-complete -f -c fundle -n '__fish_prog_needs_command' -a global-update -d "update existing global plugin(s)
+complete -f -c fundle -n '__fish_prog_needs_command' -a global-update -d "update existing global plugin(s)"
 complete -f -c fundle -n '__fish_prog_needs_command' -a update -d "update existing plugin(s)"
 complete -f -c fundle -n '__fish_prog_needs_command' -a clean -d "cleans unused plugins"
 complete -f -c fundle -n '__fish_prog_needs_command' -a self-update -d "update fundle"
