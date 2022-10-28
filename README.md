@@ -180,7 +180,7 @@ If you used the [global installation script](./install-fundle-global.fish) above
 
 This means you can `fundle global-plugin 'repo_owner/repo_name'` to load plugins to `/etc/fish`, where they are accessible to everyone.
 
-`fundle global-plugin` simply invokes `fundle plugin` as `root`, so it has the same paramter functionality: `--path` and `--path`.
+`fundle global-plugin` simply invokes `fundle plugin` as `root`, so it has the same paramter functionality: `--url` and `--path`.
 
 Unlike the `fundle plugin` command, there's no need to run this at startup in a `.fish` file, or to run `fundle init` afterwards. Users need only `source /etc/fish/config.fish` to load newly-installed plugins.
 
