@@ -164,7 +164,7 @@ function __fundle_plugin_index -d "returns the index of the plugin" -a plugin
 			and builtin return $i
 	end
 	# NOTE: should never reach this point
-	builtin printf "could not find plugin: $plugin\n";
+	builtin printf 'could not find plugin: $plugin\n';
 		and builtin return 1
 end
 
@@ -272,12 +272,12 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 		for f in $conf_dir/*.fish
 			builtin source $f
 		end
-	else if not contains $plugin_dir $fish_function_path
+	else
 	    # For compatibility with oh-my-fish themes, if there is no `init.fish` file in the plugin,
 	    # which is the case with themses, the root directory of the plugin is trerated as a functions
 	    # folder, so we include it in the `fish_function_path` variable.
-		builtin set fish_function_path $fish_function_path[1] $plugin_dir $fish_function_path[2..-1]
-	    end
+		builtin contains $plugin_dir $fish_function_path;
+			or builtin set fish_function_path $fish_function_path[1] $plugin_dir $fish_function_path[2..-1];
 	end
 
 	if builtin test -f $bindings_file
@@ -304,7 +304,7 @@ end
 
 function __fundle_bind -d "set up bindings"
 	functions -q fish_user_key_bindings;
-		and not functions -q __fish_user_key_bindings;
+		and builtin not (functions -q __fish_user_key_bindings);
 		and functions -c fish_user_key_bindings __fish_user_key_bindings
 
 	function fish_user_key_bindings
@@ -431,10 +431,10 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 		and builtin set plugin_url (__fundle_get_url $name)
 	builtin set name (builtin string split @ $name)[1]
 
-	if not builtin contains $name (__fundle_plugins)
-		builtin set -g __fundle_plugin_names $__fundle_plugin_names $name
-		builtin set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url
-		builtin set -g __fundle_plugin_name_paths $__fundle_plugin_name_paths $name:$plugin_path
+	builtin contains $name (__fundle_plugins);
+		or builtin set -g __fundle_plugin_names $__fundle_plugin_names $name;
+		and builtin set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url;
+		and builtin set -g __fundle_plugin_name_paths $__fundle_plugin_name_paths $name:$plugin_path
 	end
 end
 
