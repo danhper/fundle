@@ -100,7 +100,7 @@ function __fundle_commit_sha -d "returns sha of the commit-ish" -a dir -a commit
 	__fundle_rev_parse $dir $commitish
 end
 
-function __fundle_list_plugins -d "list installed plugins under given directory" -a dirs
+function __fundle_list_plugins -d "list installed plugins under given directory" -a dir
 	builtin test -n "$dir" -a -d $dir -a -r $dir;
 		and command find $dir -type d -mindepth 2 -maxdepth 2 2>/dev/null | \
 			command string replace $dir ''
