@@ -8,7 +8,7 @@ function __fundle_next_arg -a index
 	builtin set -l args $argv[2..-1]
 	builtin set -l arg_index (math $index + 1)
 	builtin test (builtin count $args) -lt $arg_index;
-		and builtin printf "missing argument for %s" $args[$index]
+		and builtin printf 'missing argument for %s\n' $args[$index]
 		and builtin return 1
 	builtin set -l arg $args[$arg_index]
 	switch $arg
@@ -23,8 +23,8 @@ end
 
 function __fundle_compare_versions -a version1 -a version2
 	for i in (__fundle_seq 4)
-		builtin set -l v1 (builtin echo $version1 | command cut -d '.' -f $i | command sed -Ee 's/[a-z]+//g')
-		builtin set -l v2 (builtin echo $version2 | command cut -d '.' -f $i | command sed -Ee 's/[a-z]+//g')
+		builtin set -l v1 (builtin printf '%s\n' $version1 | command cut -d '.' -f $i | command sed -Ee 's/[a-z]+//g')
+		builtin set -l v2 (builtin printf '%s\n' $version2 | command cut -d '.' -f $i | command sed -Ee 's/[a-z]+//g')
 		if builtin test \( -n $v1 -a -z $v2 \) -o \( -n $v1 -a -n $v2 -a $v1 -lt $v2 \)
 			builtin printf 'lt';
 				and builtin return 0
@@ -39,7 +39,7 @@ end
 
 function __fundle_date -d "returns a date"
 	builtin set -l d (command date +%s%N)
-	builtin printf '%s\n' $d | builtin string match -rvq 'N';
+	builtin string match -rvq 'N' $d;
 		and builtin printf '%s\n' $d;
 		or command gdate +%s%N
 	end
@@ -59,7 +59,7 @@ function __fundle_self_update -d "updates fundle"
     # This `sed` stays for now since doing it easily with `string` requires "--filter", which is only in 2.6.0
 	builtin set -l latest (command git ls-remote --tags $fundle_repo_url | command sed -n -e 's|.*refs/tags/v\(.*\)|\1|p' | command tail -n 1)
 	if builtin test (__fundle_compare_versions $latest (__fundle_version)) != "gt"
-		builtin printf 'fundle is already up to date';
+		builtin printf 'fundle is already up to date\n';
 			and builtin return 0
 	else
 		builtin set -l file_url_template 'https://raw.githubusercontent.com/tuvistavie/fundle/VERSION/functions/fundle.fish'
@@ -68,20 +68,20 @@ function __fundle_self_update -d "updates fundle"
 		builtin set -l update_message "fundle has been updated to version $latest"
 		command curl -Ls $file_url > $tmp_file;
 			and command mv $tmp_file (builtin status -f);
-			and builtin printf '%s' $update_message;
+			and builtin printf '%s\n' $update_message;
 			and builtin return 0
 	end
 end
 
 function __fundle_url_rev -d "prints the revision from the url" -a git_url
-	builtin set -l rev (printf '%s' $git_url | cut -d '#' -f 2 -s)
+	builtin set -l rev (printf '%s\n' $git_url | cut -d '#' -f 2 -s)
 	builtin test -n "$rev";
-		and builtin printf '%s' $rev;
-		or builtin printf '%s' HEAD
+		and builtin printf '%s\n' $rev;
+		or builtin printf '%s\n' HEAD
 end
 
 function __fundle_remote_url -d "prints the remote url from the full git url" -a git_url
-	builtin printf '%s' $git_url | command cut -d '#' -f 1
+	builtin printf '%s\n' $git_url | command cut -d '#' -f 1
 end
 
 function __fundle_rev_parse -d "prints the revision if any" -a dir -a commitish
@@ -122,10 +122,10 @@ end
 function __fundle_plugins_dir -d "returns fundle directory"
 	if builtin test -z "$fundle_plugins_dir"
 		builtin test -n "$XDG_CONFIG_HOME";
-			and builtin printf '%s' $XDG_CONFIG_HOME/fish/fundle;
-			or builtin printf '%s' $HOME/.config/fish/fundle
+			and builtin printf '%s\n' $XDG_CONFIG_HOME/fish/fundle;
+			or builtin printf '%s\n' $HOME/.config/fish/fundle
 	else
-		builtin printf '%s' $fundle_plugins_dir
+		builtin printf '%s\n' $fundle_plugins_dir
 	end
 end
 
@@ -134,7 +134,7 @@ function __fundle_no_git -d "check if git is installed"
 	command -s git > /dev/null 2>&1;
 	builtin set -l temp $status
 	builtin test $temp -eq 0;
-		or builtin printf 'git needs to be installed and in the path'
+		or builtin printf 'git needs to be installed and in the path\n'
 	builtin return $temp
 end
 
@@ -143,7 +143,7 @@ function __fundle_check_date -d "check date"a
 		and builtin return 0
 	command -s gdate > /dev/null 2>&1;
 		and builtin return 0
-	builtin printf "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX";
+	builtin printf "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX\n";
 	  and builtin return 1
 end
 
@@ -155,7 +155,7 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
 
     builtin test ! -z "$tag";
     	and builtin set url (builtin string join "#tags/" "$url" "$tag")
-    builtin printf '%s' $url
+    builtin printf '%s\n' $url
 end
 
 function __fundle_plugin_index -d "returns the index of the plugin" -a plugin
@@ -164,7 +164,7 @@ function __fundle_plugin_index -d "returns the index of the plugin" -a plugin
 			and builtin return $i
 	end
 	# NOTE: should never reach this point
-	builtin printf "could not find plugin: $plugin";
+	builtin printf "could not find plugin: $plugin\n";
 		and builtin return 1
 end
 
@@ -176,13 +176,13 @@ function __fundle_checkout_revision -a plugin -a git_url
 	if builtin test $status -eq 0
 		command git --git-dir="$git_dir" --work-tree="$plugin_dir" checkout -q -f $sha
 	else
-		builtin printf 'Could not checkout %s revision %s' $plugin $sha;
+		builtin printf 'Could not checkout %s revision %s\n' $plugin $sha;
 			and builtin return 1
 	end
 end
 
 function __fundle_update_plugin -d "update the given plugin" -a plugin -a git_url
-	builtin printf 'Updating %s' $plugin
+	builtin printf 'Updating %s\n' $plugin
 
 	builtin set -l remote_url (__fundle_remote_url $git_url)
 	builtin set -l git_dir (__fundle_plugins_dir)/$plugin/.git
@@ -202,9 +202,9 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	builtin set -l remote_url (__fundle_remote_url $git_url)
 
 	if builtin test -d $plugin_dir
-		builtin printf '%s installed in %s' $argv[1] $plugin_dir
+		builtin printf '%s installed in %s\n' $argv[1] $plugin_dir
 	else
-		builtin printf 'Installing %s' $plugin
+		builtin printf 'Installing %s\n' $plugin
 		command git clone -q $remote_url $plugin_dir
 		__fundle_checkout_revision $plugin $git_url
 	end
@@ -220,7 +220,7 @@ end
 
 function __fundle_update -d "update the given plugin, or all if unspecified" -a plugin
 	builtin test -n "$plugin" -a ! -d (__fundle_plugins_dir)/$plugin/.git;
-		and builtin printf "%s not installed. You may need to run 'fundle install'" $plugin;
+		and builtin printf "%s not installed. You may need to run 'fundle install'\n" $plugin;
 		and builtin return 1
 
 	if builtin test -n "$plugin"
@@ -236,7 +236,7 @@ end
 function __fundle_show_doc_msg -d "show a link to fundle docs"
 	builtin test (builtin count $argv) -ge 1;
 		and builtin printf '%s' $argv
-	builtin printf 'See the docs for more info. https://github.com/tuvistavie/fundle'
+	builtin printf 'See the docs for more info. https://github.com/tuvistavie/fundle\n'
 end
 
 function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "load a plugin"
@@ -247,7 +247,7 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 	builtin set -l plugin_dir (builtin string replace -r '/.$' '' -- "$fundle_dir/$plugin/$path")
 
 	builtin test ! -d $plugin_dir;
-		and __fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'";
+		and __fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'\n";
 		and builtin return 1
 
     # Take everything but "plugin-" from the last path component
@@ -321,8 +321,6 @@ function __fundle_init -d "initialize fundle"
 
 	builtin test (builtin count $__fundle_plugin_names) -eq 0;
 		and __fundle_show_doc_msg "No plugin registered. You need to call 'fundle plugin NAME' before using 'fundle init'. \
-        end
-329
 
 Try reloading your shell if you just edited your configuration.";
 		and builtin return 1
@@ -384,9 +382,7 @@ end
 function __fundle_global_plugin -d "install global plugin to fundle" -a name
 	__fundle_validate_sudo;
 		or builtin return $status
-	command sudo --user=root fish -c "fundle plugin $name; \
-						and fundle init; \
-						and command chmod -cR a+rx /root/.config/fish";
+	command sudo --user=root fish -c "fundle plugin $name; and fundle init; and command chmod -cR a+rx /root/.config/fish";
 		and for f in (command find /root/.config/fish/fundle/$name -type f -name '*.fish')
 			builtin set -l dir (builtin string replace /root/.config/fish /etc/fish (command dirname $f))
 				and command mkdir -pv $dir;
@@ -399,7 +395,7 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	builtin set -l argv_count (count $argv)
 	builtin set -l skip_next true
 	if builtin test $argv_count -eq 0 -o -z "$argv"
-		builtin printf 'usage: fundle plugin NAME [[--url] URL] [--path PATH]'
+		builtin printf 'usage: fundle plugin NAME [[--url] URL] [--path PATH]\n'
 		builtin return 1
 	else if builtin test $argv_count -gt 1
 		for i in (__fundle_seq (count $argv))
@@ -411,21 +407,21 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 				case '--url'
 					builtin set plugin_url (__fundle_next_arg $i $argv)
 					builtin test $status -eq 1;
-						and builtin printf '%s' $plugin_url;
+						and builtin printf '%s\n' $plugin_url;
 						and builtin return 1
 					builtin set skip_next true
 				case '--path'
 					builtin set plugin_path (__fundle_next_arg $i $argv)
 					builtin test $status -eq 1;
-						and builtin printf '%s' $plugin_path;
+						and builtin printf '%s\n' $plugin_path;
 						and builtin return 1
 					builtin set skip_next true
 				case '--*'
-					builtin printf 'unknown flag %s' $arg;
+					builtin printf 'unknown flag %s\n' $arg;
 						and builtin return 1
 				case '*'
 					builtin test $i -ne 2;
-						and builtin printf 'invalid argument %s' $arg;
+						and builtin printf 'invalid argument %s\n' $arg;
 						and builtin return 1
 					builtin set plugin_url $arg
 			end
@@ -443,15 +439,15 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 end
 
 function __fundle_version -d "prints fundle version"
-	builtin printf '%s' $__fundle_current_version
+	builtin printf '%s\n' $__fundle_current_version
 end
 
 function __fundle_print_help -d "prints fundle help"
-	builtin printf 'usage: fundle (init | global-plugin | plugin | list | install | global-update | update | clean | self-update | version | help)'
+	builtin printf 'usage: fundle (init | global-plugin | plugin | list | install | global-update | update | clean | self-update | version | help)\n'
 end
 
 function __fundle_list -d "list registered plugins"
-	if begin; builtin contains -- -s $argv; or builtin contains -- --short $argv; end
+	if builtin test (builtin contains -- -s $argv) -o (builtin contains -- --short $argv)
 		for name in $__fundle_plugin_names
 			builtin printf '%s' $name
 		end
@@ -487,7 +483,7 @@ function fundle -d "run fundle"v
 		case "list"
 			__fundle_list $sub_args
 		case "plugins"
-			builtin printf "'fundle plugins' has been replaced by 'fundle list'"
+			builtin printf "'fundle plugins' has been replaced by 'fundle list'\n"
 		case "install"
 			__fundle_install $sub_args
 		case "global-update"
