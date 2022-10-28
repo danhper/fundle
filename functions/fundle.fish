@@ -62,7 +62,7 @@ function __fundle_self_update -d "updates fundle"
 		builtin set -l file_url (builtin string replace 'VERSION' -- "v$latest" $file_url_template)
 		builtin set -l tmp_file (command mktemp /tmp/fundle.XXX)
 		builtin set -l update_message "fundle has been updated to version $latest"
-		command curl -Ls $file_url > $tmp_file; and mv $tmp_file (builtin status -f); and echo $update_message; and return 0
+		command curl -Ls $file_url > $tmp_file; and command mv $tmp_file (builtin status -f); and builtin echo $update_message; and builtin return 0
 	end
 end
 
