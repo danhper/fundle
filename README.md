@@ -174,8 +174,12 @@ Unlike the `fundle plugin` command, there's no need to run this at startup in a 
 
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install`: Install all plugins
-* `fundle update`: Update all plugins (deprecates: `fundle install -u`)
-* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Add a plugin to fundle.
+* `fundle update`: Update all local plugins (deprecates: `fundle install -u`)
+* `fundle global-update`: Update all global plugins
+* `fundle global-plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Globally dd a plugin to fundle.
+  * `--url` set the URL to clone the plugin.
+  * `--path` set the plugin path (relative to the repository root)
+* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Locally add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
 * `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
