@@ -213,8 +213,8 @@ end
 fundle __fundle_update_global -d "update the given global plugin, or all if unspecified" -a plugin
 	__fundle_validate_sudo;
 		or builtin return $status
-	builtin test -n "$name";
-		and command sudo --user=root fish -c "fundle update $name";
+	builtin test -n "$plugin";
+		and command sudo --user=root fish -c "fundle update $plugin";
 		or command sudo --user=root fish -c "fundle update"
 end
 
@@ -379,10 +379,12 @@ function __fundle_clean -d "cleans fundle directory"
 	end
 end
 
-function __fundle_global_plugin -d "install global plugin to fundle" -a name
+function __fundle_global_plugin -d "install global plugin to fundle"
 	__fundle_validate_sudo;
 		or builtin return $status
-	command sudo --user=root fish -c "fundle plugin $name; and fundle init; and command chmod -cR a+rx /root/.config/fish";
+	builtin set -l name (builtin string split $argv)[1]
+		and builtin test -n "$name";
+		and command sudo --user=root fish -c "fundle plugin $argv; and fundle init; and command chmod -cR a+rx /root/.config/fish";
 		and for f in (command find /root/.config/fish/fundle/$name -type f -name '*.fish')
 			builtin set -l dir (builtin string replace /root/.config/fish /etc/fish (command dirname $f))
 				and command mkdir -pv $dir;
