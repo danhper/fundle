@@ -153,7 +153,7 @@ function __fundle_get_url -d "returns the url for the given plugin" -a repo
     builtin set tag  $split[2]
     builtin set url "https://github.com/$repo.git"
 
-    builtin test ! -z "$tag";
+    builtin test -n "$tag";
     	and builtin set url (builtin string join "#tags/" "$url" "$tag")
     builtin printf '%s\n' $url
 end
@@ -246,8 +246,8 @@ function __fundle_load_plugin -a plugin -a path -a fundle_dir -a profile -d "loa
 
 	builtin set -l plugin_dir (builtin string replace -r '/.$' '' -- "$fundle_dir/$plugin/$path")
 
-	builtin test ! -d $plugin_dir;
-		and __fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'\n";
+	builtin test -d $plugin_dir;
+		or __fundle_show_doc_msg "$plugin not installed. You may need to run 'fundle install'\n";
 		and builtin return 1
 
     # Take everything but "plugin-" from the last path component
@@ -372,8 +372,8 @@ function __fundle_clean -d "cleans fundle directory"
 	for installed_plugin in $installed_plugins
 		builtin set -l plugin (builtin string trim --chars="/" \
 						(builtin string replace -r -- "$fundle_dir" "" $installed_plugin))
-		builtin test ! (builtin contains $plugin $used_plugins);
-			and builtin printf 'Removing %s\n' $plugin
+		builtin contains $plugin $used_plugins;
+			or builtin printf 'Removing %s\n' $plugin;
 			and command rm -rf $fundle_dir/$plugin
 		end
 	end
