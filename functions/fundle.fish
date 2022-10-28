@@ -384,7 +384,7 @@ function __fundle_global_plugin -d "install global plugin to fundle"
 		or builtin return $status
 	builtin set -l name (command awk -F '[[:blank:]@]+' '{print $1}' "$argv")
 		and builtin test -n "$name";
-		and command sudo --user=root fish -c "fundle plugin $argv; and fundle init; and command chmod -cR a+rx /root/.config/fish";
+		and command sudo --user=root fish -c "fundle plugin $argv; and fundle init; and fundle install; and command chmod -cR a+rx /root/.config/fish";
 		and for f in (command find /root/.config/fish/fundle/$name -type f -name '*.fish')
 			builtin set -l dir (builtin string replace /root/.config/fish /etc/fish (command dirname $f))
 				and command mkdir -pv $dir;
