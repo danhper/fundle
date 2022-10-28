@@ -37,7 +37,7 @@ if not functions -q fundle; eval (curl -sfL https://git.io/fundle-install); end
 
 ### Global installation
 
-If you want to install fundle globally, simply log in as a sudoer:
+If you want to install fundle globally, simply log in as a sudoer and:
 
 ```fish
 curl -sfL https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish | fish
@@ -45,7 +45,7 @@ curl -sfL https://raw.githubusercontent.com/danhper/fundle/master/install-fundle
 
 ### Prevent user installations
 
-If you want to install fundle globally and prevent non-sudoers from installing local plugins:
+If you want to install fundle globally and prevent non-sudoers from installing local plugins, log in as a sudoer and:
 
 ```fish
 wget https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish
