@@ -483,7 +483,7 @@ function fundle -d "run fundle"v
 		case "plugin"
 			__fundle_plugin $sub_args
 		case "list"
-			__fundle_list $sub_args
+			__fundle_plugins $sub_args
 		case "plugins"
 			builtin printf "'fundle plugins' has been replaced by 'fundle list'\n"
 		case "install"
