@@ -43,6 +43,14 @@ function __fundle_date -d "returns a date"
 	return 0
 end
 
+function __fundle_validate_sudo -d "test whether the user is a sudoer"
+	command sudo -v
+	builtin set -l test $status
+	builtin printf 'You are %sa sudoer!' (builtin test $temp -eq 0;
+						or builtin printf 'not ')
+	builtin return $temp
+end
+
 function __fundle_self_update -d "updates fundle"
 	set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
     # This `sed` stays for now since doing it easily with `string` requires "--filter", which is only in 2.6.0
@@ -88,6 +96,27 @@ function __fundle_commit_sha -d "returns sha of the commit-ish" -a dir -a commit
 		return 0
 	end
 	__fundle_rev_parse $dir $commitish
+end
+
+function __fundle_list_plugins -d "list installed plugins under given directory" -a dirs
+	builtin test -n "$dir" -a -d $dir -a -r $dir;
+		and command find $dir -type d -mindepth 2 -maxdepth 2 2>/dev/null | \
+			command string replace $dir ''
+end
+
+function __fundle_local_plugins -d "list locally installed plugins"
+	__fundle_list_plugins __fundle_plugins_dir
+end
+
+function __fundle_global_plugins -d "list gloally installed plugins"
+	__fundle_list_plugins /etc/fish/fundle
+end
+
+function __fundle_plugins -d "list all available plugins"
+	builtin printf '%s\n' (__fundle_global_plugins; \
+				and __fundle_local_plugins | \
+				builtin string collect | \
+				command sort -df
 end
 
 function __fundle_plugins_dir -d "returns fundle directory"
@@ -186,6 +215,14 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 		command git clone -q $remote_url $plugin_dir
 		__fundle_checkout_revision $plugin $git_url
 	end
+end
+
+fundle __fundle_update_global -d "update the given global plugin, or all if unspecified" -a plugin
+	__fundle_validate_sudo;
+		or builtin return $status
+	builtin test -n "$name";
+		and command sudo --user=root fish -c "fundle update $name";
+		or command sudo --user=root fish -c "fundle update"
 end
 
 function __fundle_update -d "update the given plugin, or all if unspecified" -a plugin
@@ -358,6 +395,18 @@ function __fundle_clean -d "cleans fundle directory"
 	end
 end
 
+function __fundle_global_plugin -d "install global plugin to fundle" -a name
+	__fundle_validate_sudo;
+		or builtin return $status
+	command sudo --user=root fish -c "fundle plugin $name; \
+						and fundle init; \
+						and command chmod -cR a+rx /root/.config/fish";
+		and for f in (command find /root/.config/fish/fundle/$name -type f -name '*.fish')
+			builtin set -l dir (builtin string replace /root/.config/fish /etc/fish (command dirname $f))
+				and command mkdir -pv $dir;
+				and command sudo ln -v $f $dir
+end
+
 function __fundle_plugin -d "add plugin to fundle" -a name
 	set -l plugin_url ""
 	set -l plugin_path "."
@@ -390,7 +439,7 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 	test -z "$plugin_url"; and set plugin_url (__fundle_get_url $name)
     set name (string split @ $name)[1]
 
-	if not contains $name $__fundle_plugin_names
+	if not contains $name (__fundle_plugins)
 		set -g __fundle_plugin_names $__fundle_plugin_names $name
 		set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url
 		set -g __fundle_plugin_name_paths $__fundle_plugin_name_paths $name:$plugin_path
@@ -402,7 +451,7 @@ function __fundle_version -d "prints fundle version"
 end
 
 function __fundle_print_help -d "prints fundle help"
-	echo "usage: fundle (init | plugin | list | install | update | clean | self-update | version | help)"
+	echo "usage: fundle (init | global-plugin | plugin | list | install | global-update | update | clean | self-update | version | help)"
 end
 
 function __fundle_list -d "list registered plugins"
@@ -436,6 +485,8 @@ function fundle -d "run fundle"
 	switch $argv[1]
 		case "init"
 			__fundle_init $sub_args
+		case "global-plugin"
+			__fundle_global_plugin $sub_args
 		case "plugin"
 			__fundle_plugin $sub_args
 		case "list"
@@ -444,6 +495,8 @@ function fundle -d "run fundle"
 			echo "'fundle plugins' has been replaced by 'fundle list'"
 		case "install"
 			__fundle_install $sub_args
+		case "global-update"
+			__fundle_update_global $sub_args
 		case "update"
 			__fundle_update $sub_args
 		case "clean"
