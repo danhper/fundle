@@ -43,6 +43,16 @@ If you want to install fundle globally, simply log in as a sudoer:
 curl -sfL https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish | fish
 ```
 
+### Prevent user installations
+
+If you want to install fundle globally and prevent non-sudoers from installing local plugins:
+
+```
+wget https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish
+fish -c "source ./install-fundle-global.fish --restrict-user-plugins"
+rm -rf ./install-fundle-plugins.fish
+```
+
 ### ArchLinux
 
 fundle is available on the AUR, so you can install it system wide with
