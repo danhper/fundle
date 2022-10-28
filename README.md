@@ -35,6 +35,14 @@ the following at the top of your `~/.config/fish/config.fish`.
 if not functions -q fundle; eval (curl -sfL https://git.io/fundle-install); end
 ```
 
+### Global installation
+
+If you want to install fundle globally, simply log in as a sudoer:
+
+```fish
+curl -sfL https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish | fish
+```
+
 ### ArchLinux
 
 fundle is available on the AUR, so you can install it system wide with
@@ -156,6 +164,11 @@ fundle update
 ```
 
 to update the plugins.
+
+### Global plugins
+If you used the [global installation script](./install-fundle-global.fish) above, then your system is configured for all users to use fundle plugins!
+This means you can `fundle global-plugin 'repo_owner/repo_name'` (similar the [sample configuration](#sample-configfish) above) to load plugins to `/etc/fish`, where they are accessible to everyone.
+Unlike the `fundle plugin` command, there's no need to run this at startup in a `.fish` file, or to run `fundle init` afterwards. Users need only `source /etc/fish/config.fish` to load newly-installed plugins.
 
 ## Commands
 
