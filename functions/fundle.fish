@@ -113,10 +113,10 @@ function __fundle_global_plugins -d "list gloally installed plugins"
 end
 
 function __fundle_plugins -d "list all available plugins"
-	builtin printf '%s\n' (__fundle_global_plugins; \
-				and __fundle_local_plugins | \
-				builtin string collect | \
-				command sort -df
+	builtin printf '%s\n' (begin; \
+				__fundle_global_plugins; \
+				and __fundle_local_plugins; end) | \
+				command sort -dfu
 end
 
 function __fundle_plugins_dir -d "returns fundle directory"
