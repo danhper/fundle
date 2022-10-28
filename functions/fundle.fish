@@ -382,7 +382,7 @@ end
 function __fundle_global_plugin -d "install global plugin to fundle"
 	__fundle_validate_sudo;
 		or builtin return $status
-	builtin set -l name (builtin string split $argv)[1]
+	builtin set -l name (builtin string split -f1 '@' (builtin string split -f1 ' ' $argv))
 		and builtin test -n "$name";
 		and command sudo --user=root fish -c "fundle plugin $argv; and fundle init; and command chmod -cR a+rx /root/.config/fish";
 		and for f in (command find /root/.config/fish/fundle/$name -type f -name '*.fish')
