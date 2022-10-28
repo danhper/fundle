@@ -196,7 +196,7 @@ Unlike the `fundle plugin` command, there's no need to run this at startup in a 
 * `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Locally add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
-* `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle list [-s]`: List the currently installed plugins, globally or locally, including dependencies
 * `fundle clean`: Cleans unused plugins
 * `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
