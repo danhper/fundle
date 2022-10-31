@@ -444,19 +444,7 @@ function __fundle_print_help -d "prints fundle help"
 	builtin printf 'usage: fundle (init | global-plugin | plugin | list | install | global-update | update | clean | self-update | version | help)\n'
 end
 
-function __fundle_list -d "list registered plugins"
-	if builtin test (builtin contains -- -s $argv) -o (builtin contains -- --short $argv)
-		for name in $__fundle_plugin_names
-			builtin printf '%s' $name
-		end
-	else
-		for i in (__fundle_seq (builtin count $__fundle_plugin_names))
-			builtin echo {$__fundle_plugin_names[$i]}\n\t{$__fundle_plugin_urls[$i]}
-		end
-	end
-end
-
-function fundle -d "run fundle"v
+function fundle -d "run fundle"
 	__fundle_no_git;
 		and builtin return 1
 
