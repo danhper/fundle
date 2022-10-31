@@ -54,6 +54,13 @@ function __fundle_validate_sudo -d "test whether the user is a sudoer"
 	builtin return $temp
 end
 
+function __fundle_is_global -d "test whether fundle is installed globally or locally"
+	builtin string match -qr (builtin printf '^/home/%s' (command whoami)) (builtin status fish-path);
+		and builtin printf 'You should have installed fundle globally!\nSee https://github.com/danhper/fundle/%global-installation';
+		and builtin return 1
+	builtin return 0
+end
+
 function __fundle_self_update -d "updates fundle"
 	builtin set -l fundle_repo_url "https://github.com/tuvistavie/fundle.git"
     # This `sed` stays for now since doing it easily with `string` requires "--filter", which is only in 2.6.0
@@ -211,6 +218,8 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 end
 
 fundle __fundle_update_global -d "update the given global plugin, or all if unspecified" -a plugin
+	__fundle_is_global;
+		or builtin return $status
 	__fundle_validate_sudo;
 		or builtin return $status
 	builtin test -n "$plugin";
@@ -380,6 +389,8 @@ function __fundle_clean -d "cleans fundle directory"
 end
 
 function __fundle_global_plugin -d "install global plugin to fundle"
+	__fundle_is_global;
+		or builtin return $status
 	__fundle_validate_sudo;
 		or builtin return $status
 	builtin set -l name (command awk -F '[[:blank:]@]+' '{print $1}' "$argv")
