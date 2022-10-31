@@ -429,7 +429,7 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 		and builtin set plugin_url (__fundle_get_url $name)
 	builtin set name (builtin string split @ $name)[1]
 
-	builtin contains $name (__fundle_plugins);
+	builtin contains $name (__fundle_list);
 		or builtin set -g __fundle_plugin_names $__fundle_plugin_names $name;
 		and builtin set -g __fundle_plugin_urls $__fundle_plugin_urls $plugin_url;
 		and builtin set -g __fundle_plugin_name_paths $__fundle_plugin_name_paths $name:$plugin_path
