@@ -413,33 +413,16 @@ function __fundle_plugin -d "add plugin to fundle" -a name
 		builtin printf 'usage: fundle plugin NAME [[--url] URL] [--path PATH]\n'
 		builtin return 1
 	else if builtin test $argv_count -gt 1
-		for i in (__fundle_seq (count $argv))
-			builtin test $skip_next = true;
-				and builtin set skip_next false;
-				and continue
-			builtin set -l arg $argv[$i]
-			switch $arg
-				case '--url'
-					builtin set plugin_url (__fundle_next_arg $i $argv)
-					builtin test $status -eq 1;
-						and builtin printf '%s\n' $plugin_url;
-						and builtin return 1
-					builtin set skip_next true
-				case '--path'
-					builtin set plugin_path (__fundle_next_arg $i $argv)
-					builtin test $status -eq 1;
-						and builtin printf '%s\n' $plugin_path;
-						and builtin return 1
-					builtin set skip_next true
-				case '--*'
-					builtin printf 'unknown flag %s\n' $arg;
-						and builtin return 1
-				case '*'
-					builtin test $i -ne 2;
-						and builtin printf 'invalid argument %s\n' $arg;
-						and builtin return 1
-					builtin set plugin_url $arg
-			end
+		builtin argsparse 'u/url=' 'p/path=' -- $args
+		if builtin set -q _flag_url
+			builtin set -l plugin_url $_flag_url
+		else if builtin set -q _flag_u
+			builtin set -l plugin_url $_flag_u
+		end
+		if builtin set -q _flag_path
+			builtin set -l plugin_path $_flag_path
+		else if builtin set -q _flag_p
+			builtin set -l plugin_path $_flag_p
 		end
 	end
 	builtin test -z "$plugin_url";
