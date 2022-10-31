@@ -121,7 +121,7 @@ function __fundle_global_plugins -d "list gloally installed plugins"
 	__fundle_list_plugins /etc/fish/fundle
 end
 
-function __fundle_plugins -d "list all available plugins"
+function __fundle_list -d "list all available plugins"
 	begin; __fundle_global_plugins;
 	   and __fundle_local_plugins; end | command sort -dfu
 end
@@ -479,7 +479,7 @@ function fundle -d "run fundle"v
 		case "plugin"
 			__fundle_plugin $sub_args
 		case "list"
-			__fundle_plugins $sub_args
+			__fundle_list $sub_args
 		case "plugins"
 			builtin printf "'fundle plugins' has been replaced by 'fundle list'\n"
 		case "install"
