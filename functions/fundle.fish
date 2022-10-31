@@ -217,7 +217,7 @@ function __fundle_install_plugin -d "install the given plugin" -a plugin -a git_
 	end
 end
 
-fundle __fundle_update_global -d "update the given global plugin, or all if unspecified" -a plugin
+function __fundle_update_global -d "update the given global plugin, or all if unspecified" -a plugin
 	__fundle_is_global;
 		or builtin return $status
 	__fundle_validate_sudo;
