@@ -151,18 +151,18 @@ function __fundle_check_date -d "check date"a
 	command -s gdate > /dev/null 2>&1;
 		and builtin return 0
 	builtin printf "You need to have a GNU date compliant date installed to use profiling. Use 'brew install coreutils' on OSX\n";
-	  and builtin return 1
+		and builtin return 1
 end
 
 function __fundle_get_url -d "returns the url for the given plugin" -a repo
-    builtin set split (builtin string split @ $repo)
-    builtin set repo $split[1]
-    builtin set tag  $split[2]
-    builtin set url "https://github.com/$repo.git"
+	builtin set split (builtin string split @ $repo)
+	builtin set repo $split[1]
+	builtin set tag  $split[2]
+	builtin set url "https://github.com/$repo.git"
 
-    builtin test -n "$tag";
-    	and builtin set url (builtin string join "#tags/" "$url" "$tag")
-    builtin printf '%s\n' $url
+	builtin test -n "$tag";
+		and builtin set url (builtin string join "#tags/" "$url" "$tag")
+	builtin printf '%s\n' $url
 end
 
 function __fundle_plugin_index -d "returns the index of the plugin" -a plugin
