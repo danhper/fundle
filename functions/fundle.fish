@@ -335,10 +335,12 @@ Try reloading your shell if you just edited your configuration.";
 		and builtin return 1
 	end
 
-	builtin set -l profile 0
-	builtin test (builtin contains -- -p $argv) -o (builtin contains -- --profile $argv);
-		and __fundle_check_date;
-		and builtin set profile 1
+	if __fundle_check_date
+		builtin argparse 'p/profile' -- $args
+		builtin set -l profile (builtin not (builtin test (builtin set -q _flag_profile) -o (builtin set -q _flag_p)))
+	else
+		builtin set -l profile 0
+	end
 
 	builtin set -l has_uninstalled_plugins 0
 	for name_path in $__fundle_plugin_name_paths
