@@ -367,18 +367,18 @@ function __fundle_install -d "install plugin"
 		__fundle_install_plugin $__fundle_plugin_names[$i] $__fundle_plugin_urls[$i] $argv
 	end
 
-	set -l original_plugins_count (builtin count (__fundle_list -s))
+	set -l original_plugins_count (builtin count (__fundle_list
 	__fundle_init
 
 	# if plugins count increase after init, new plugins have dependencies
 	# install new plugins dependencies if any
-	builtin test (builtin count (__fundle_list -s)) -gt $original_plugins_count;
+	builtin test (builtin count (__fundle_list)) -gt $original_plugins_count;
 		and __fundle_install $argv
 end
 
 function __fundle_clean -d "cleans fundle directory"
 	builtin set -l fundle_dir (__fundle_plugins_dir)
-	builtin set -l used_plugins (__fundle_list -s)
+	builtin set -l used_plugins (__fundle_list)
 	builtin set -l installed_plugins $fundle_dir/*/*/
 	for installed_plugin in $installed_plugins
 		builtin set -l plugin (builtin string trim --chars="/" \
