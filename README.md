@@ -176,7 +176,7 @@ fundle update
 to update the plugins.
 
 ### Global plugins
-If you used the [global installation script](./install-fundle-global.fish) above, then your system is configured for all users to use fundle plugins!
+If you used the [global installation script](./install-fundle-global.fish) above, then your system is configured for all users to use fundle plugins! (Otherwise, you can't use this funcitonality.)
 
 This means you can `fundle global-plugin 'repo_owner/repo_name'` to load plugins to `/etc/fish`, where they are accessible to everyone.
 
@@ -190,11 +190,13 @@ Users need only `source /etc/fish/config.fish` to load newly-installed plugins.
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install`: Install all plugins
 * `fundle update`: Update all local plugins (deprecates: `fundle install -u`)
+* `fundle update PLUGIN`: Update a specified local plugin
 * `fundle global-update`: Update all global plugins
-* `fundle global-plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Globally add a plugin to fundle.
+* `fundle global-update PLUGIN`: Update a specified global plugin
+* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Locally add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
-* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Locally add a plugin to fundle.
+* `fundle global-plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Globally add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
 * `fundle list [-s]`: List the currently installed plugins, globally or locally, including dependencies
