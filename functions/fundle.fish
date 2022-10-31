@@ -56,7 +56,7 @@ end
 
 function __fundle_is_global -d "test whether fundle is installed globally or locally"
 	builtin string match -qr (builtin printf '^/home/%s' (command whoami)) (builtin status fish-path);
-		and builtin printf 'You should have installed fundle globally!\nSee https://github.com/danhper/fundle/%global-installation';
+		and builtin printf 'You should have installed fundle globally!\nSee https://github.com/danhper/fundle/%global-installation\n';
 		and builtin return 1
 	builtin return 0
 end
