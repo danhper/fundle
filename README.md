@@ -35,6 +35,24 @@ the following at the top of your `~/.config/fish/config.fish`.
 if not functions -q fundle; eval (curl -sfL https://git.io/fundle-install); end
 ```
 
+### Global installation
+
+If you want to install fundle globally, simply log in as a sudoer and:
+
+```fish
+curl -sfL https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish | fish
+```
+
+### Prevent user installations
+
+If you want to install fundle globally and prevent non-sudoers from installing local plugins, log in as a sudoer and:
+
+```fish
+wget https://raw.githubusercontent.com/danhper/fundle/master/install-fundle-global.fish
+fish -c "source ./install-fundle-global.fish --restrict-user-plugins"
+rm -rf ./install-fundle-plugins.fish # don't forget to delete the downloaded script after the new shell loads
+```
+
 ### ArchLinux
 
 fundle is available on the AUR, so you can install it system wide with
@@ -65,7 +83,7 @@ fundle init
 
 This will source the four plugins listed and load all the functions and completions found.
 
-*Note that the `fundle init` is required on each file loading a plugin, so if you load plugins in multiple .fish files, you have to add `fundle init` to each one of them.*
+*Note that the `fundle init` is required on each file loading a plugin, so if you load plugins in multiple `.fish` files, you have to add `fundle init` to each one of them.*
 
 After editing `config.fish`:
 
@@ -157,15 +175,31 @@ fundle update
 
 to update the plugins.
 
+### Global plugins
+If you used the [global installation script](./install-fundle-global.fish) above, then your system is configured for all users to use fundle plugins! (Otherwise, you can't use this funcitonality.)
+
+This means you can `fundle global-plugin 'repo_owner/repo_name'` to load plugins to `/etc/fish`, where they are accessible to everyone.
+
+`fundle global-plugin` simply invokes `fundle plugin` as `root`, so it has the same paramter functionality: `--url` and `--path`.
+
+Unlike the `fundle plugin` command, there's no need to run this at startup in a `.fish` file, or to run `fundle init`/`fundle install` afterwards.
+Users need only `source /etc/fish/config.fish` to load newly-installed plugins.
+
 ## Commands
 
 * `fundle init`: Initialize fundle, loading all the available plugins
 * `fundle install`: Install all plugins
-* `fundle update`: Update all plugins (deprecates: `fundle install -u`)
-* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Add a plugin to fundle.
+* `fundle update`: Update all local plugins (deprecates: `fundle install -u`)
+* `fundle update PLUGIN`: Update a specified local plugin
+* `fundle global-update`: Update all global plugins
+* `fundle global-update PLUGIN`: Update a specified global plugin
+* `fundle plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Locally add a plugin to fundle.
   * `--url` set the URL to clone the plugin.
   * `--path` set the plugin path (relative to the repository root)
-* `fundle list [-s]`: List the currently installed plugins, including dependencies (-s gives a shorter version)
+* `fundle global-plugin PLUGIN [--url PLUGIN_URL] [--path PATH]`: Globally add a plugin to fundle.
+  * `--url` set the URL to clone the plugin.
+  * `--path` set the plugin path (relative to the repository root)
+* `fundle list [-s]`: List the currently installed plugins, globally or locally, including dependencies
 * `fundle clean`: Cleans unused plugins
 * `fundle self-update`: Updates fundle to the latest version
 * `fundle version`: Displays the current version of fundle
